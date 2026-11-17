@@ -1,5 +1,11 @@
-# Generates the extension icons (16, 32, 48, 128 px) with System.Drawing.
-# Works in Windows PowerShell 5.1. Output: <project>\extension\icons\icon-<size>.png
+# Generates the app icon with System.Drawing (works in Windows PowerShell 5.1):
+#   extension\icons\icon-16/32/48/128.png   used by the extension and the pages
+#   installer\icon-256.png                  large size for the installer's .ico
+#   dev\out\icon-preview.png                every size on a light and a dark background
+#
+# The icon is a comic speech bubble holding the letter ع: white fill and an ink
+# outline, so it reads on light and dark toolbars alike, with a hard red shadow
+# like printed comics.
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -7,33 +13,30 @@ Add-Type -AssemblyName System.Drawing
 
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $outDir      = Join-Path $projectRoot 'extension\icons'
-if (-not (Test-Path -LiteralPath $outDir)) {
-    New-Item -ItemType Directory -Path $outDir | Out-Null
+$previewDir  = Join-Path $PSScriptRoot 'out'
+foreach ($d in @($outDir, $previewDir)) {
+    if (-not (Test-Path -LiteralPath $d)) { New-Item -ItemType Directory -Path $d | Out-Null }
 }
 
-$bgColor   = [System.Drawing.ColorTranslator]::FromHtml('#0E0E0F')
-$goldColor = [System.Drawing.ColorTranslator]::FromHtml('#C8A55A')
-$letter    = [string][char]0x0639   # Arabic letter ع
+$ink    = [System.Drawing.ColorTranslator]::FromHtml('#141414')
+$paper  = [System.Drawing.Color]::White
+$red    = [System.Drawing.ColorTranslator]::FromHtml('#E23A2B')
+$letter = [string][char]0x0639   # Arabic letter ع
 $fontName  = 'Segoe UI'
 $fontStyle = [System.Drawing.FontStyle]::Bold
-$targetInkRatio = 0.62              # letter ink height as a share of icon height
-$refEm     = 200.0                  # reference font size used for measuring
+$refEm  = 200.0
+$typo   = [System.Drawing.StringFormat]::GenericTypographic
 
-$typo = [System.Drawing.StringFormat]::GenericTypographic
-
-# Measure the ink bounding box of the letter at a reference size.
-# Returns @{ Left; Top; Width; Height } relative to the drawing origin.
+# Ink bounding box of the letter at the reference size, so it can be centred by
+# what is actually drawn rather than by the font's line box.
 function Get-InkBox {
-    $refSize = 400
-    $origin  = 100
+    $refSize = 400; $origin = 100
     $bmp = New-Object System.Drawing.Bitmap $refSize, $refSize
     $g   = [System.Drawing.Graphics]::FromImage($bmp)
     $g.Clear([System.Drawing.Color]::Black)
     $g.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAlias
     $font = New-Object System.Drawing.Font($fontName, [single]$refEm, $fontStyle, [System.Drawing.GraphicsUnit]::Pixel)
-    $brush = [System.Drawing.Brushes]::White
-    $g.DrawString($letter, $font, $brush, [single]$origin, [single]$origin, $typo)
-
+    $g.DrawString($letter, $font, [System.Drawing.Brushes]::White, [single]$origin, [single]$origin, $typo)
     $minX = $refSize; $minY = $refSize; $maxX = -1; $maxY = -1
     for ($y = 0; $y -lt $refSize; $y++) {
         for ($x = 0; $x -lt $refSize; $x++) {
@@ -47,84 +50,121 @@ function Get-InkBox {
     }
     $font.Dispose(); $g.Dispose(); $bmp.Dispose()
     if ($maxX -lt 0) { throw "Glyph not rendered; font '$fontName' may lack Arabic support." }
-    return @{
-        Left   = [double]($minX - $origin)
-        Top    = [double]($minY - $origin)
-        Width  = [double]($maxX - $minX + 1)
-        Height = [double]($maxY - $minY + 1)
+    return @{ Left = [double]($minX - $origin); Top = [double]($minY - $origin); Width = [double]($maxX - $minX + 1); Height = [double]($maxY - $minY + 1) }
+}
+$inkBox = Get-InkBox
+
+# The bubble outline (body + tail) in a 128-unit design space.
+function New-BubblePath {
+    param([double]$k, [double]$dx, [double]$dy, [hashtable]$shape)
+    $path = New-Object System.Drawing.Drawing2D.GraphicsPath ([System.Drawing.Drawing2D.FillMode]::Winding)
+    $path.AddEllipse([single](($shape.cx - $shape.rx + $dx) * $k), [single](($shape.cy - $shape.ry + $dy) * $k), [single](2 * $shape.rx * $k), [single](2 * $shape.ry * $k))
+    $pts = New-Object 'System.Drawing.PointF[]' 3
+    for ($i = 0; $i -lt 3; $i++) {
+        $pts[$i] = New-Object System.Drawing.PointF([single](($shape.tail[$i][0] + $dx) * $k), [single](($shape.tail[$i][1] + $dy) * $k))
     }
+    $path.AddPolygon($pts)
+    return $path
 }
 
-$ink = Get-InkBox
+# One bubble: a thick stroke, then the fill on top, which leaves a clean outer outline.
+function Add-Bubble {
+    param($g, [double]$k, [double]$dx, [double]$dy, [hashtable]$shape, $fill, $edge, [double]$outline)
+    $path = New-BubblePath -k $k -dx $dx -dy $dy -shape $shape
+    $pen = New-Object System.Drawing.Pen $edge, ([single](2 * $outline))
+    $pen.LineJoin = [System.Drawing.Drawing2D.LineJoin]::Miter
+    $pen.MiterLimit = 6
+    $brush = New-Object System.Drawing.SolidBrush $fill
+    $g.DrawPath($pen, $path)
+    # Fill the body and the tail one by one: filled together, the part where they
+    # overlap can be left empty depending on the direction each outline was drawn.
+    $g.FillEllipse($brush, [single](($shape.cx - $shape.rx + $dx) * $k), [single](($shape.cy - $shape.ry + $dy) * $k), [single](2 * $shape.rx * $k), [single](2 * $shape.ry * $k))
+    $tail = New-Object 'System.Drawing.PointF[]' 3
+    for ($i = 0; $i -lt 3; $i++) {
+        $tail[$i] = New-Object System.Drawing.PointF([single](($shape.tail[$i][0] + $dx) * $k), [single](($shape.tail[$i][1] + $dy) * $k))
+    }
+    $g.FillPolygon($brush, $tail)
+    $brush.Dispose(); $pen.Dispose(); $path.Dispose()
+}
 
 function New-Icon {
-    param([int]$size, [bool]$withFrame)
-
-    $bmp = New-Object System.Drawing.Bitmap $size, $size
+    param([int]$size, [switch]$Tiny)
+    $bmp = New-Object System.Drawing.Bitmap $size, $size, ([System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
     $g   = [System.Drawing.Graphics]::FromImage($bmp)
-    $g.Clear($bgColor)
+    $g.Clear([System.Drawing.Color]::Transparent)
     $g.SmoothingMode     = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
+    $g.PixelOffsetMode   = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
     $g.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAliasGridFit
-    $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+    $k = $size / 128.0
 
-    # Scale the letter so its ink height is 62% of the icon, centred on the ink box.
-    $scale    = ($size * $targetInkRatio) / $ink.Height
-    $emSize   = [single]($refEm * $scale)
-    $font     = New-Object System.Drawing.Font($fontName, $emSize, $fontStyle, [System.Drawing.GraphicsUnit]::Pixel)
-    $inkLeft  = $ink.Left * $scale
-    $inkTop   = $ink.Top  * $scale
-    $inkW     = $ink.Width  * $scale
-    $inkH     = $ink.Height * $scale
-    $drawX    = ($size - $inkW) / 2.0 - $inkLeft
-    $drawY    = ($size - $inkH) / 2.0 - $inkTop
-    $brush    = New-Object System.Drawing.SolidBrush $goldColor
-    $g.DrawString($letter, $font, $brush, [single]$drawX, [single]$drawY, $typo)
-    $brush.Dispose(); $font.Dispose()
-
-    if ($withFrame) {
-        $inset = [double]$size * 0.09
-        $penW  = if ($size -ge 128) { 1.5 } else { 1.0 }
-        $chamfer = [double]$size * 0.12
-        $half  = $penW / 2.0
-        $l = $inset + $half
-        $t = $inset + $half
-        $r = $size - $inset - $half
-        $b = $size - $inset - $half
-        # Outline with the top-left corner cut diagonally.
-        $pts = [System.Drawing.PointF[]]@(
-            (New-Object System.Drawing.PointF([single]($l + $chamfer), [single]$t)),
-            (New-Object System.Drawing.PointF([single]$r, [single]$t)),
-            (New-Object System.Drawing.PointF([single]$r, [single]$b)),
-            (New-Object System.Drawing.PointF([single]$l, [single]$b)),
-            (New-Object System.Drawing.PointF([single]$l, [single]($t + $chamfer)))
-        )
-        $pen = New-Object System.Drawing.Pen $goldColor, ([single]$penW)
-        $pen.LineJoin = [System.Drawing.Drawing2D.LineJoin]::Miter
-        $g.DrawPolygon($pen, $pts)
-        $pen.Dispose()
+    if (-not $Tiny) {
+        # Bubble with a hard shadow down and to the left.
+        $shape   = @{ cx = 70.0; cy = 50.0; rx = 49.0; ry = 39.0; tail = @(@(46.0, 78.0), @(31.0, 111.0), @(80.0, 84.0)) }
+        $outline = [Math]::Max(1.4, 5.0 * $k)
+        $shadow  = 8.0
+        Add-Bubble -g $g -k $k -dx (-$shadow) -dy $shadow -shape $shape -fill $red -edge $red -outline $outline
+        $letterRatio = 0.37
+    } else {
+        # Tiny sizes: no shadow, the bubble fills the square so the letter stays readable.
+        $shape   = @{ cx = 64.0; cy = 52.0; rx = 56.0; ry = 46.0; tail = @(@(30.0, 80.0), @(18.0, 124.0), @(70.0, 94.0)) }
+        $outline = 12.0 * $k
+        $letterRatio = 0.52
     }
+    Add-Bubble -g $g -k $k -dx 0 -dy 0 -shape $shape -fill $paper -edge $ink -outline $outline
 
-    $g.Dispose()
+    # The letter, centred on the bubble body by its ink box.
+    $scale  = ($size * $letterRatio) / $inkBox.Height
+    $font   = New-Object System.Drawing.Font($fontName, [single]($refEm * $scale), $fontStyle, [System.Drawing.GraphicsUnit]::Pixel)
+    $drawX  = $shape.cx * $k - ($inkBox.Width * $scale) / 2.0 - $inkBox.Left * $scale
+    $drawY  = ($shape.cy - 1.0) * $k - ($inkBox.Height * $scale) / 2.0 - $inkBox.Top * $scale
+    $brush  = New-Object System.Drawing.SolidBrush $ink
+    $g.DrawString($letter, $font, $brush, [single]$drawX, [single]$drawY, $typo)
+    $brush.Dispose(); $font.Dispose(); $g.Dispose()
     return $bmp
 }
 
-foreach ($size in @(16, 32, 48, 128)) {
-    $withFrame = ($size -ge 48)
-    if ($size -eq 128) {
-        # Chrome Web Store icon rule: 96x96 artwork centred on a 128x128 canvas,
-        # leaving 16 px of transparent padding on every side.
-        $art = New-Icon -size 96 -withFrame $true
-        $bmp = New-Object System.Drawing.Bitmap 128, 128, ([System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
-        $pg  = [System.Drawing.Graphics]::FromImage($bmp)
-        $pg.Clear([System.Drawing.Color]::Transparent)
-        $pg.DrawImageUnscaled($art, 16, 16)
-        $pg.Dispose()
-        $art.Dispose()
+$made = @{}
+foreach ($size in @(16, 32, 48, 128, 256)) {
+    if ($size -eq 16) {
+        # Drawn four times larger and scaled down: small text keeps its weight this
+        # way, where drawing it directly at 8 px comes out thin and grey.
+        $big = New-Icon -size 64 -Tiny
+        $bmp = New-Object System.Drawing.Bitmap 16, 16, ([System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+        $dg  = [System.Drawing.Graphics]::FromImage($bmp)
+        $dg.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+        $dg.PixelOffsetMode   = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
+        $dg.DrawImage($big, 0, 0, 16, 16)
+        $dg.Dispose(); $big.Dispose()
     } else {
-        $bmp = New-Icon -size $size -withFrame $withFrame
+        $bmp = New-Icon -size $size
     }
-    $path = Join-Path $outDir ("icon-{0}.png" -f $size)
+    $path = if ($size -eq 256) { Join-Path $projectRoot 'installer\icon-256.png' } else { Join-Path $outDir ("icon-{0}.png" -f $size) }
     $bmp.Save($path, [System.Drawing.Imaging.ImageFormat]::Png)
-    $bmp.Dispose()
-    Write-Output ("Wrote {0} (frame: {1})" -f $path, $withFrame)
+    $made[$size] = $bmp
+    Write-Output ("Wrote {0}" -f $path)
 }
+
+# Preview sheet: every size on a light and on a dark strip.
+$sheet = New-Object System.Drawing.Bitmap 560, 330
+$sg = [System.Drawing.Graphics]::FromImage($sheet)
+$sg.Clear([System.Drawing.ColorTranslator]::FromHtml('#F1F3F4'))
+$darkBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.ColorTranslator]::FromHtml('#202124'))
+$sg.FillRectangle($darkBrush, 0, 165, 560, 165)
+$darkBrush.Dispose()
+foreach ($row in @(0, 165)) {
+    $x = 20
+    foreach ($size in @(128, 48, 32, 16)) {
+        $sg.DrawImageUnscaled($made[$size], $x, $row + [int]((165 - $size) / 2))
+        $x += $size + 30
+    }
+    # the 16 px icon enlarged four times, to judge its pixels
+    $sg.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::NearestNeighbor
+    $sg.PixelOffsetMode   = [System.Drawing.Drawing2D.PixelOffsetMode]::Half
+    $sg.DrawImage($made[16], $x + 20, $row + 50, 64, 64)
+    $sg.DrawImage($made[32], $x + 110, $row + 50, 64, 64)
+}
+$sg.Dispose()
+$sheet.Save((Join-Path $previewDir 'icon-preview.png'), [System.Drawing.Imaging.ImageFormat]::Png)
+$sheet.Dispose()
+foreach ($b in $made.Values) { $b.Dispose() }
+Write-Output 'Wrote dev\out\icon-preview.png'

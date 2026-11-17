@@ -23,14 +23,18 @@ if (-not (Test-Path -LiteralPath $zip)) { throw "ZIP not found: $zip" }
 # 2. Icon file from the extension's PNG icons (PNG-compressed entries).
 New-Item -ItemType Directory -Force -Path $obj | Out-Null
 $ico   = Join-Path $obj 'icon.ico'
-$sizes = 16, 32, 48, 128
-$pngs  = foreach ($s in $sizes) { , [System.IO.File]::ReadAllBytes((Join-Path $projectRoot "extension\icons\icon-$s.png")) }
+$sizes = 16, 32, 48, 128, 256
+$pngs  = foreach ($s in $sizes) {
+    $p = if ($s -eq 256) { Join-Path $src 'icon-256.png' } else { Join-Path $projectRoot "extension\icons\icon-$s.png" }
+    , [System.IO.File]::ReadAllBytes($p)
+}
 $ms = New-Object System.IO.MemoryStream
 $bw = New-Object System.IO.BinaryWriter $ms
 $bw.Write([uint16]0); $bw.Write([uint16]1); $bw.Write([uint16]$sizes.Count)
 $offset = 6 + 16 * $sizes.Count
 for ($i = 0; $i -lt $sizes.Count; $i++) {
-    $bw.Write([byte]$sizes[$i]); $bw.Write([byte]$sizes[$i]); $bw.Write([byte]0); $bw.Write([byte]0)
+    $dim = if ($sizes[$i] -ge 256) { 0 } else { $sizes[$i] }   # 0 means 256 in an .ico directory
+    $bw.Write([byte]$dim); $bw.Write([byte]$dim); $bw.Write([byte]0); $bw.Write([byte]0)
     $bw.Write([uint16]1); $bw.Write([uint16]32)
     $bw.Write([uint32]$pngs[$i].Length); $bw.Write([uint32]$offset)
     $offset += $pngs[$i].Length

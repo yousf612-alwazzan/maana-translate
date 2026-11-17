@@ -1,48 +1,68 @@
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="معنى — التثبيت" Width="800" Height="548"
+        Title="معنى — التثبيت" Width="840" Height="580"
         WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
-        Background="#0E0E0F" Foreground="#EBE6DA" FlowDirection="RightToLeft"
-        FontFamily="Segoe UI" FontSize="14" UseLayoutRounding="True" SnapsToDevicePixels="True"
+        Background="#FBF8F0" Foreground="#141414" FlowDirection="RightToLeft"
+        FontFamily="Segoe UI" FontSize="15" UseLayoutRounding="True" SnapsToDevicePixels="True"
         TextOptions.TextFormattingMode="Display">
   <Window.Resources>
-    <SolidColorBrush x:Key="Gold" Color="#C8A55A"/>
-    <SolidColorBrush x:Key="GoldHi" Color="#E3C783"/>
-    <SolidColorBrush x:Key="GoldDim" Color="#7D6A3C"/>
-    <SolidColorBrush x:Key="Line" Color="#2C2A26"/>
-    <SolidColorBrush x:Key="Panel" Color="#151516"/>
-    <SolidColorBrush x:Key="Muted" Color="#9C968A"/>
-    <SolidColorBrush x:Key="Text" Color="#EBE6DA"/>
+    <!-- Comic-page palette: paper, ink, one red, and the pale yellow of caption boxes. -->
+    <SolidColorBrush x:Key="Ink" Color="#141414"/>
+    <SolidColorBrush x:Key="Paper" Color="#FBF8F0"/>
+    <SolidColorBrush x:Key="Red" Color="#E23A2B"/>
+    <SolidColorBrush x:Key="Note" Color="#FFE58A"/>
+    <SolidColorBrush x:Key="Muted" Color="#8A857A"/>
 
-    <Style x:Key="Btn" TargetType="Button">
-      <Setter Property="Foreground" Value="{StaticResource Gold}"/>
-      <Setter Property="Background" Value="Transparent"/>
-      <Setter Property="BorderBrush" Value="{StaticResource GoldDim}"/>
-      <Setter Property="Padding" Value="16,0"/>
-      <Setter Property="Height" Value="32"/>
+    <!-- Screentone: the dot shading of printed comics. -->
+    <DrawingBrush x:Key="Tone" TileMode="Tile" Viewport="0,0,8,8" ViewportUnits="Absolute" Viewbox="0,0,8,8" ViewboxUnits="Absolute">
+      <DrawingBrush.Drawing>
+        <DrawingGroup>
+          <GeometryDrawing Brush="Transparent">
+            <GeometryDrawing.Geometry><RectangleGeometry Rect="0,0,8,8"/></GeometryDrawing.Geometry>
+          </GeometryDrawing>
+          <GeometryDrawing Brush="#2B141414">
+            <GeometryDrawing.Geometry><EllipseGeometry Center="4,4" RadiusX="1.3" RadiusY="1.3"/></GeometryDrawing.Geometry>
+          </GeometryDrawing>
+        </DrawingGroup>
+      </DrawingBrush.Drawing>
+    </DrawingBrush>
+
+    <!-- Main action: ink block on a hard red shadow that it sinks into when pressed. -->
+    <Style x:Key="BtnPrimary" TargetType="Button">
+      <Setter Property="Foreground" Value="#FFFFFF"/>
+      <Setter Property="FontSize" Value="16"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="Padding" Value="20,0"/>
+      <Setter Property="Height" Value="42"/>
       <Setter Property="Cursor" Value="Hand"/>
       <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="Button">
-            <Border x:Name="b" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Padding="{TemplateBinding Padding}">
-              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Border>
+            <Grid>
+              <Border x:Name="sh" Background="{StaticResource Red}" Margin="6,6,-6,-6"/>
+              <Border x:Name="b" Background="{StaticResource Ink}" BorderBrush="{StaticResource Ink}" BorderThickness="3" Padding="{TemplateBinding Padding}">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Border>
+            </Grid>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="b" Property="Background" Value="#1B1A18"/>
-                <Setter TargetName="b" Property="BorderBrush" Value="{StaticResource Gold}"/>
-                <Setter Property="Foreground" Value="{StaticResource GoldHi}"/>
+                <Setter TargetName="b" Property="RenderTransform">
+                  <Setter.Value><TranslateTransform X="2" Y="2"/></Setter.Value>
+                </Setter>
               </Trigger>
               <Trigger Property="IsKeyboardFocused" Value="True">
-                <Setter TargetName="b" Property="BorderBrush" Value="{StaticResource GoldHi}"/>
+                <Setter TargetName="b" Property="BorderBrush" Value="{StaticResource Note}"/>
               </Trigger>
               <Trigger Property="IsPressed" Value="True">
-                <Setter TargetName="b" Property="Background" Value="#23211C"/>
+                <Setter TargetName="b" Property="RenderTransform">
+                  <Setter.Value><TranslateTransform X="6" Y="6"/></Setter.Value>
+                </Setter>
               </Trigger>
               <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="#5D594F"/>
-                <Setter TargetName="b" Property="BorderBrush" Value="#33312C"/>
+                <Setter TargetName="b" Property="Background" Value="#B9B4A8"/>
+                <Setter TargetName="b" Property="BorderBrush" Value="#B9B4A8"/>
+                <Setter TargetName="sh" Property="Background" Value="#DFDACD"/>
               </Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>
@@ -50,30 +70,29 @@
       </Setter>
     </Style>
 
-    <Style x:Key="BtnPrimary" TargetType="Button" BasedOn="{StaticResource Btn}">
-      <Setter Property="Foreground" Value="#0E0E0F"/>
+    <!-- Secondary action: white with an ink frame. -->
+    <Style x:Key="Btn" TargetType="Button">
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
       <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Padding" Value="16,0"/>
+      <Setter Property="Height" Value="42"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="Button">
-            <Border x:Name="b" Background="{StaticResource Gold}" BorderBrush="{StaticResource Gold}" BorderThickness="1" Padding="{TemplateBinding Padding}">
+            <Border x:Name="b" Background="#FFFFFF" BorderBrush="{StaticResource Ink}" BorderThickness="3" Padding="{TemplateBinding Padding}">
               <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="b" Property="Background" Value="{StaticResource GoldHi}"/>
-                <Setter TargetName="b" Property="BorderBrush" Value="{StaticResource GoldHi}"/>
+                <Setter TargetName="b" Property="Background" Value="{StaticResource Note}"/>
               </Trigger>
               <Trigger Property="IsKeyboardFocused" Value="True">
-                <Setter TargetName="b" Property="BorderBrush" Value="#F6EBC8"/>
+                <Setter TargetName="b" Property="BorderBrush" Value="{StaticResource Red}"/>
               </Trigger>
               <Trigger Property="IsPressed" Value="True">
-                <Setter TargetName="b" Property="Background" Value="#B4934C"/>
-              </Trigger>
-              <Trigger Property="IsEnabled" Value="False">
-                <Setter TargetName="b" Property="Background" Value="#2A2824"/>
-                <Setter TargetName="b" Property="BorderBrush" Value="#33312C"/>
-                <Setter Property="Foreground" Value="#6A655B"/>
+                <Setter TargetName="b" Property="Background" Value="#F3D56A"/>
               </Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>
@@ -82,9 +101,9 @@
     </Style>
 
     <Style x:Key="TitleBtn" TargetType="Button">
-      <Setter Property="Width" Value="38"/>
-      <Setter Property="Height" Value="30"/>
-      <Setter Property="Foreground" Value="{StaticResource Muted}"/>
+      <Setter Property="Width" Value="44"/>
+      <Setter Property="Height" Value="34"/>
+      <Setter Property="Foreground" Value="#FFFFFF"/>
       <Setter Property="Cursor" Value="Hand"/>
       <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
       <Setter Property="Template">
@@ -95,8 +114,7 @@
             </Border>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="b" Property="Background" Value="#1F1E1B"/>
-                <Setter Property="Foreground" Value="{StaticResource Text}"/>
+                <Setter TargetName="b" Property="Background" Value="{StaticResource Red}"/>
               </Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>
@@ -104,37 +122,33 @@
       </Setter>
     </Style>
 
+    <!-- Browser choice: a frame with a square mark that fills red when chosen. -->
     <Style x:Key="Choice" TargetType="RadioButton">
-      <Setter Property="Foreground" Value="{StaticResource Text}"/>
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
       <Setter Property="Cursor" Value="Hand"/>
-      <Setter Property="Margin" Value="0,0,0,6"/>
+      <Setter Property="Margin" Value="0,0,0,8"/>
       <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="RadioButton">
-            <Border x:Name="b" Background="{StaticResource Panel}" BorderBrush="{StaticResource Line}" BorderThickness="1" Padding="12,0" Height="34">
+            <Border x:Name="b" Background="#FFFFFF" BorderBrush="{StaticResource Ink}" BorderThickness="3" Padding="12,0" Height="42">
               <DockPanel>
-                <Grid DockPanel.Dock="Left" Width="12" Height="12" Margin="0,0,10,0" VerticalAlignment="Center">
-                  <Rectangle Stroke="{StaticResource GoldDim}" StrokeThickness="1" RenderTransformOrigin="0.5,0.5">
-                    <Rectangle.RenderTransform><RotateTransform Angle="45"/></Rectangle.RenderTransform>
-                  </Rectangle>
-                  <Rectangle x:Name="dot" Fill="{StaticResource Gold}" Margin="3" Visibility="Hidden" RenderTransformOrigin="0.5,0.5">
-                    <Rectangle.RenderTransform><RotateTransform Angle="45"/></Rectangle.RenderTransform>
-                  </Rectangle>
-                </Grid>
+                <Border DockPanel.Dock="Left" Width="18" Height="18" Margin="0,0,12,0" VerticalAlignment="Center" BorderBrush="{StaticResource Ink}" BorderThickness="3" Background="#FFFFFF">
+                  <Rectangle x:Name="dot" Fill="{StaticResource Red}" Visibility="Hidden"/>
+                </Border>
                 <ContentPresenter VerticalAlignment="Center"/>
               </DockPanel>
             </Border>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="b" Property="BorderBrush" Value="{StaticResource GoldDim}"/>
+                <Setter TargetName="b" Property="Background" Value="{StaticResource Note}"/>
               </Trigger>
               <Trigger Property="IsKeyboardFocused" Value="True">
-                <Setter TargetName="b" Property="BorderBrush" Value="{StaticResource GoldHi}"/>
+                <Setter TargetName="b" Property="BorderBrush" Value="{StaticResource Red}"/>
               </Trigger>
               <Trigger Property="IsChecked" Value="True">
                 <Setter TargetName="dot" Property="Visibility" Value="Visible"/>
-                <Setter TargetName="b" Property="BorderBrush" Value="{StaticResource Gold}"/>
               </Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>
@@ -143,223 +157,266 @@
     </Style>
 
     <Style x:Key="H" TargetType="TextBlock">
-      <Setter Property="FontSize" Value="21"/>
-      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="FontSize" Value="30"/>
+      <Setter Property="FontWeight" Value="Bold"/>
       <Setter Property="Margin" Value="0,0,0,10"/>
     </Style>
     <Style x:Key="P" TargetType="TextBlock">
       <Setter Property="TextWrapping" Value="Wrap"/>
-      <Setter Property="LineHeight" Value="23"/>
+      <Setter Property="LineHeight" Value="25"/>
       <Setter Property="Margin" Value="0,0,0,6"/>
     </Style>
-    <Style x:Key="Small" TargetType="TextBlock" BasedOn="{StaticResource P}">
-      <Setter Property="Foreground" Value="{StaticResource Muted}"/>
-      <Setter Property="FontSize" Value="12.5"/>
-      <Setter Property="LineHeight" Value="20"/>
+    <!-- A caption box, the way comics set narration apart. -->
+    <Style x:Key="Cap" TargetType="Border">
+      <Setter Property="Background" Value="{StaticResource Note}"/>
+      <Setter Property="BorderBrush" Value="{StaticResource Ink}"/>
+      <Setter Property="BorderThickness" Value="3"/>
+      <Setter Property="Padding" Value="12,6"/>
+      <Setter Property="Margin" Value="0,8,0,0"/>
+      <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+    <Style x:Key="CapText" TargetType="TextBlock">
+      <Setter Property="TextWrapping" Value="Wrap"/>
+      <Setter Property="FontSize" Value="13.5"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="LineHeight" Value="21"/>
     </Style>
     <Style x:Key="Key" TargetType="Border">
-      <Setter Property="BorderBrush" Value="#4A463E"/>
-      <Setter Property="BorderThickness" Value="1"/>
-      <Setter Property="Background" Value="#1B1A18"/>
-      <Setter Property="Padding" Value="7,1"/>
-      <Setter Property="Margin" Value="3,0"/>
+      <Setter Property="BorderBrush" Value="{StaticResource Ink}"/>
+      <Setter Property="BorderThickness" Value="2,2,2,4"/>
+      <Setter Property="Background" Value="#FFFFFF"/>
+      <Setter Property="Padding" Value="8,0,8,1"/>
+      <Setter Property="Margin" Value="5,0"/>
       <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
+    <Style x:Key="KeyText" TargetType="TextBlock">
+      <Setter Property="FontFamily" Value="Consolas"/>
+      <Setter Property="FontSize" Value="13"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+    <!-- A panel showing a piece of the browser, with screentone behind it. -->
     <Style x:Key="Mock" TargetType="Border">
-      <Setter Property="Background" Value="{StaticResource Panel}"/>
-      <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
-      <Setter Property="BorderThickness" Value="1"/>
-      <Setter Property="Padding" Value="16,14"/>
-      <Setter Property="Margin" Value="0,12,0,0"/>
+      <Setter Property="Background" Value="#FFFFFF"/>
+      <Setter Property="BorderBrush" Value="{StaticResource Ink}"/>
+      <Setter Property="BorderThickness" Value="3"/>
+      <Setter Property="Margin" Value="0,16,0,0"/>
       <Setter Property="FlowDirection" Value="LeftToRight"/>
+    </Style>
+    <Style x:Key="MockIn" TargetType="Border">
+      <Setter Property="Background" Value="{StaticResource Tone}"/>
+      <Setter Property="Padding" Value="16,14"/>
     </Style>
   </Window.Resources>
 
-  <Border BorderBrush="#3A3528" BorderThickness="1">
+  <Border BorderBrush="{StaticResource Ink}" BorderThickness="4">
     <Grid>
       <Grid.RowDefinitions>
-        <RowDefinition Height="46"/>
+        <RowDefinition Height="50"/>
         <RowDefinition Height="*"/>
-        <RowDefinition Height="60"/>
+        <RowDefinition Height="74"/>
       </Grid.RowDefinitions>
 
       <!-- title bar -->
-      <Border x:Name="titleBar" Grid.Row="0" Background="#0E0E0F" BorderBrush="{StaticResource GoldDim}" BorderThickness="0,0,0,1">
-        <DockPanel Margin="16,0,4,0">
+      <Border x:Name="titleBar" Grid.Row="0" Background="{StaticResource Ink}">
+        <DockPanel Margin="14,0,4,0">
           <Button x:Name="btnClose" DockPanel.Dock="Right" Style="{StaticResource TitleBtn}" ToolTip="إغلاق">
-            <Path Data="M0,0 L10,10 M10,0 L0,10" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2"/>
+            <Path Data="M0,0 L11,11 M11,0 L0,11" Stroke="#FFFFFF" StrokeThickness="1.8"/>
           </Button>
           <Button x:Name="btnMin" DockPanel.Dock="Right" Style="{StaticResource TitleBtn}" ToolTip="تصغير">
-            <Path Data="M0,0 L10,0" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.2" Margin="0,6,0,0"/>
+            <Path Data="M0,0 L11,0" Stroke="#FFFFFF" StrokeThickness="1.8" Margin="0,7,0,0"/>
           </Button>
           <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-            <Grid Width="26" Height="26">
-              <Path Data="M0.5,0.5 L18.5,0.5 L25.5,7.5 L25.5,25.5 L0.5,25.5 Z" Stroke="{StaticResource GoldDim}" StrokeThickness="1"/>
-              <TextBlock Text="ع" Foreground="{StaticResource Gold}" FontSize="17" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-4,0,0"/>
-            </Grid>
-            <TextBlock Text="معنى" FontSize="15.5" FontWeight="SemiBold" VerticalAlignment="Center" Margin="11,0,0,1"/>
-            <TextBlock x:Name="verText" Text="التثبيت" Foreground="{StaticResource Muted}" FontSize="12.5" VerticalAlignment="Center" Margin="10,1,0,0"/>
+            <Image x:Name="logo" Width="34" Height="34" FlowDirection="LeftToRight" RenderOptions.BitmapScalingMode="HighQuality"/>
+            <TextBlock Text="معنى" Foreground="#FFFFFF" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,2"/>
+            <TextBlock x:Name="verText" Text="التثبيت" Foreground="#B9B4A8" FontSize="13" VerticalAlignment="Center" Margin="12,2,0,0"/>
           </StackPanel>
         </DockPanel>
       </Border>
 
       <Grid Grid.Row="1">
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="188"/>
+          <ColumnDefinition Width="204"/>
           <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- steps rail -->
-        <Border Grid.Column="0" Background="#111112" BorderBrush="{StaticResource Line}" BorderThickness="0,0,1,0">
-          <StackPanel x:Name="rail" Margin="0,22,0,0"/>
+        <!-- steps -->
+        <Border Grid.Column="0" Background="#FFFFFF" BorderBrush="{StaticResource Ink}" BorderThickness="0,0,4,0">
+          <Border Background="{StaticResource Tone}">
+            <StackPanel x:Name="rail" Margin="0,24,0,0"/>
+          </Border>
         </Border>
 
         <!-- pages -->
-        <Grid Grid.Column="1" Margin="30,24,30,10">
+        <Grid Grid.Column="1" ClipToBounds="True">
+          <Canvas x:Name="fx" IsHitTestVisible="False"/>
+          <Grid Margin="32,26,32,10">
 
-          <StackPanel x:Name="p0">
-            <TextBlock Style="{StaticResource H}" Text="تثبيت إضافة معنى"/>
-            <TextBlock Style="{StaticResource P}" Text="البرنامج يحط ملفات الإضافة على جهازك، وبعدها يمشي معك ثلاث خطوات قصيرة داخل المتصفح."/>
-            <TextBlock Style="{StaticResource Small}" Text="المتصفح ما يسمح لأي برنامج يضيف إضافة بنفسه، فهالخطوات الثلاث تسويها إنت. كل خطوة ضغطة أو لصق، والبرنامج يجهّز لك اللي تلصقه."/>
-            <TextBlock Text="المتصفح اللي تبي تثبّت عليه" Foreground="{StaticResource Muted}" FontSize="12.5" Margin="0,16,0,8"/>
-            <StackPanel x:Name="browserList"/>
-            <TextBlock x:Name="noBrowser" Style="{StaticResource Small}" Visibility="Collapsed" Text="ما لقيت متصفح مبني على كروميوم. تقدر تكمل وتفتح متصفحك بنفسك."/>
-          </StackPanel>
-
-          <StackPanel x:Name="p1" Visibility="Collapsed">
-            <TextBlock Style="{StaticResource H}" Text="نسخ الملفات"/>
-            <TextBlock x:Name="copyStatus" Style="{StaticResource P}" Text="جاري النسخ..."/>
-            <Border Style="{StaticResource Mock}" Margin="0,6,0,0">
-              <TextBlock x:Name="pathText" FontFamily="Consolas" FontSize="12.5" Foreground="{StaticResource GoldHi}" TextWrapping="Wrap"/>
-            </Border>
-            <TextBlock Style="{StaticResource Small}" Margin="0,12,0,0" Text="لا تحذف هالمجلد ولا تنقله: المتصفح يقرأ الإضافة منه كل مرة يشتغل."/>
-            <TextBlock x:Name="copyError" Style="{StaticResource P}" Foreground="#CF7663" Visibility="Collapsed" Margin="0,10,0,0"/>
-          </StackPanel>
-
-          <StackPanel x:Name="p2" Visibility="Collapsed">
-            <TextBlock Style="{StaticResource H}" Text="افتح صفحة الإضافات"/>
-            <TextBlock Style="{StaticResource P}" Text="١. اضغط «افتح المتصفح»."/>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-              <TextBlock Text="٢. في شريط العنوان اضغط" VerticalAlignment="Center"/>
-              <Border Style="{StaticResource Key}" FlowDirection="LeftToRight"><TextBlock Text="Ctrl + V" FontSize="12"/></Border>
-              <TextBlock Text="ثم" VerticalAlignment="Center"/>
-              <Border Style="{StaticResource Key}" FlowDirection="LeftToRight"><TextBlock Text="Enter" FontSize="12"/></Border>
-            </StackPanel>
-            <TextBlock Style="{StaticResource Small}" Text="العنوان انّسخ لك جاهز، ما تحتاج تكتبه."/>
-            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-              <Button x:Name="btnOpenBrowser" Style="{StaticResource BtnPrimary}" Content="افتح المتصفح"/>
-              <Button x:Name="btnCopyUrl" Style="{StaticResource Btn}" Content="انسخ العنوان مرة ثانية" Margin="8,0,0,0"/>
-              <TextBlock x:Name="copied2" Text="انّسخ" Foreground="#8FB184" FontSize="12.5" VerticalAlignment="Center" Margin="10,0,0,0" Visibility="Hidden"/>
-            </StackPanel>
-            <Border Style="{StaticResource Mock}" Margin="0,18,0,0">
-              <Border Background="#232325" CornerRadius="14" Height="30" Padding="12,0">
-                <DockPanel>
-                  <Path DockPanel.Dock="Left" Data="M0,7 A7,7 0 1 1 14,7 A7,7 0 1 1 0,7 M7,3.5 L7,7.5 M7,9.5 L7,10.5" Stroke="#8C877C" StrokeThickness="1.1" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                  <TextBlock x:Name="urlText" Text="chrome://extensions" FontFamily="Segoe UI" FontSize="13" Foreground="#EBE6DA" VerticalAlignment="Center"/>
-                </DockPanel>
+            <StackPanel x:Name="p0">
+              <TextBlock Style="{StaticResource H}" Text="تثبيت إضافة معنى"/>
+              <TextBlock Style="{StaticResource P}" Text="البرنامج يحط ملفات الإضافة على جهازك، وبعدها يمشي معك ثلاث خطوات قصيرة داخل المتصفح."/>
+              <Border Style="{StaticResource Cap}">
+                <TextBlock Style="{StaticResource CapText}" Text="المتصفح ما يسمح لأي برنامج يضيف إضافة بنفسه، فهالخطوات الثلاث تسويها إنت. كل خطوة ضغطة أو لصق، والبرنامج يجهّز لك اللي تلصقه."/>
               </Border>
-            </Border>
-          </StackPanel>
+              <TextBlock Text="المتصفح اللي تبي تثبّت عليه" FontWeight="Bold" Margin="0,20,0,8"/>
+              <StackPanel x:Name="browserList"/>
+              <TextBlock x:Name="noBrowser" Style="{StaticResource P}" Visibility="Collapsed" Text="ما لقيت متصفح مبني على كروميوم. تقدر تكمل وتفتح متصفحك بنفسك."/>
+            </StackPanel>
 
-          <StackPanel x:Name="p3" Visibility="Collapsed">
-            <TextBlock Style="{StaticResource H}" Text="شغّل وضع المطوّر"/>
-            <TextBlock Style="{StaticResource P}" Text="في صفحة الإضافات، شغّل مفتاح Developer mode اللي في زاوية الصفحة فوق."/>
-            <TextBlock Style="{StaticResource Small}" Text="إذا متصفحك بالعربي، اسمه «وضع مطوّر البرامج»."/>
-            <Border Style="{StaticResource Mock}" Margin="0,18,0,0">
-              <DockPanel>
-                <Border DockPanel.Dock="Right" BorderBrush="{StaticResource Gold}" BorderThickness="1" Padding="10,6">
-                  <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Developer mode" FontSize="13" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                    <Grid Width="34" Height="18">
-                      <Border Background="{StaticResource Gold}" CornerRadius="9"/>
-                      <Ellipse Width="12" Height="12" Fill="#0E0E0F" HorizontalAlignment="Right" Margin="0,0,3,0"/>
-                    </Grid>
+            <StackPanel x:Name="p1" Visibility="Collapsed">
+              <TextBlock Style="{StaticResource H}" Text="نسخ الملفات"/>
+              <TextBlock x:Name="copyStatus" Style="{StaticResource P}" Text="جاري النسخ..."/>
+              <Border Style="{StaticResource Mock}" Margin="0,8,0,0">
+                <Border Style="{StaticResource MockIn}">
+                  <TextBlock x:Name="pathText" FontFamily="Consolas" FontSize="13" FontWeight="Bold" TextWrapping="Wrap"/>
+                </Border>
+              </Border>
+              <Border Style="{StaticResource Cap}" Margin="0,14,0,0">
+                <TextBlock Style="{StaticResource CapText}" Text="لا تحذف هالمجلد ولا تنقله: المتصفح يقرأ الإضافة منه كل مرة يشتغل."/>
+              </Border>
+              <TextBlock x:Name="copyError" Style="{StaticResource P}" Foreground="{StaticResource Red}" FontWeight="Bold" Visibility="Collapsed" Margin="0,12,0,0"/>
+            </StackPanel>
+
+            <StackPanel x:Name="p2" Visibility="Collapsed">
+              <TextBlock Style="{StaticResource H}" Text="افتح صفحة الإضافات"/>
+              <TextBlock Style="{StaticResource P}" Text="١. اضغط «افتح المتصفح»."/>
+              <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                <TextBlock Text="٢. في شريط العنوان اضغط" VerticalAlignment="Center"/>
+                <Border Style="{StaticResource Key}" FlowDirection="LeftToRight"><TextBlock Style="{StaticResource KeyText}" Text="Ctrl + V"/></Border>
+                <TextBlock Text="ثم" VerticalAlignment="Center"/>
+                <Border Style="{StaticResource Key}" FlowDirection="LeftToRight"><TextBlock Style="{StaticResource KeyText}" Text="Enter"/></Border>
+              </StackPanel>
+              <Border Style="{StaticResource Cap}">
+                <TextBlock Style="{StaticResource CapText}" Text="العنوان انّسخ لك جاهز، ما تحتاج تكتبه."/>
+              </Border>
+              <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                <Button x:Name="btnOpenBrowser" Style="{StaticResource BtnPrimary}" Content="افتح المتصفح"/>
+                <Button x:Name="btnCopyUrl" Style="{StaticResource Btn}" Content="انسخ العنوان مرة ثانية" Margin="20,0,0,0"/>
+                <TextBlock x:Name="copied2" Text="انّسخ" Foreground="{StaticResource Red}" FontWeight="Bold" VerticalAlignment="Center" Margin="12,0,0,0" Visibility="Hidden"/>
+              </StackPanel>
+              <Border Style="{StaticResource Mock}" Margin="0,22,0,0">
+                <Border Style="{StaticResource MockIn}">
+                  <Border Background="#FFFFFF" BorderBrush="{StaticResource Ink}" BorderThickness="3" CornerRadius="17" Height="34" Padding="12,0">
+                    <DockPanel>
+                      <Path DockPanel.Dock="Left" Data="M0,7 A7,7 0 1 1 14,7 A7,7 0 1 1 0,7 M7,3.5 L7,7.5 M7,9.5 L7,10.5" Stroke="{StaticResource Ink}" StrokeThickness="1.6" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                      <TextBlock x:Name="urlText" Text="chrome://extensions" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </DockPanel>
+                  </Border>
+                </Border>
+              </Border>
+            </StackPanel>
+
+            <StackPanel x:Name="p3" Visibility="Collapsed">
+              <TextBlock Style="{StaticResource H}" Text="شغّل وضع المطوّر"/>
+              <TextBlock Style="{StaticResource P}" Text="في صفحة الإضافات، شغّل مفتاح Developer mode اللي في زاوية الصفحة فوق."/>
+              <Border Style="{StaticResource Cap}">
+                <TextBlock Style="{StaticResource CapText}" Text="إذا متصفحك بالعربي، اسمه «وضع مطوّر البرامج»."/>
+              </Border>
+              <Border Style="{StaticResource Mock}" Margin="0,22,0,0">
+                <Border Style="{StaticResource MockIn}">
+                  <DockPanel>
+                    <Border DockPanel.Dock="Right" Background="#FFFFFF" BorderBrush="{StaticResource Red}" BorderThickness="4" Padding="12,7">
+                      <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Developer mode" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <Grid Width="38" Height="20">
+                          <Border Background="{StaticResource Ink}" CornerRadius="10"/>
+                          <Ellipse Width="12" Height="12" Fill="#FFFFFF" HorizontalAlignment="Right" Margin="0,0,4,0"/>
+                        </Grid>
+                      </StackPanel>
+                    </Border>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                      <Path Data="M0,2 L4,2 L4,0 L8,0 L8,2 L12,2 L12,6 L14,6 L14,10 L12,10 L12,14 L0,14 Z" Stroke="{StaticResource Ink}" StrokeThickness="1.6" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                      <TextBlock Text="Extensions" FontSize="17" FontWeight="Bold" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </DockPanel>
+                </Border>
+              </Border>
+            </StackPanel>
+
+            <StackPanel x:Name="p4" Visibility="Collapsed">
+              <TextBlock Style="{StaticResource H}" Text="حمّل الإضافة"/>
+              <TextBlock Style="{StaticResource P}" Text="١. اضغط زر Load unpacked."/>
+              <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                <TextBlock Text="٢. في نافذة اختيار المجلد اضغط" VerticalAlignment="Center"/>
+                <Border Style="{StaticResource Key}" FlowDirection="LeftToRight"><TextBlock Style="{StaticResource KeyText}" Text="Ctrl + V"/></Border>
+                <TextBlock Text="ثم اضغط Select Folder." VerticalAlignment="Center"/>
+              </StackPanel>
+              <Border Style="{StaticResource Cap}">
+                <TextBlock Style="{StaticResource CapText}" Text="مسار المجلد انّسخ لك جاهز. بالعربي اسم الزر «تحميل إضافة تم فك حزمتها»."/>
+              </Border>
+              <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                <Button x:Name="btnCopyPath" Style="{StaticResource Btn}" Content="انسخ المسار مرة ثانية"/>
+                <TextBlock x:Name="copied4" Text="انّسخ" Foreground="{StaticResource Red}" FontWeight="Bold" VerticalAlignment="Center" Margin="12,0,0,0" Visibility="Hidden"/>
+              </StackPanel>
+              <Border Style="{StaticResource Mock}" Margin="0,16,0,0">
+                <Border Style="{StaticResource MockIn}">
+                  <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                      <Border Background="#FFFFFF" BorderBrush="{StaticResource Red}" BorderThickness="4" Padding="12,5" Margin="0,0,8,0">
+                        <TextBlock Text="Load unpacked" FontSize="13.5" FontWeight="Bold"/>
+                      </Border>
+                      <Border Background="#FFFFFF" BorderBrush="{StaticResource Muted}" BorderThickness="2" Padding="12,7" Margin="0,0,8,0">
+                        <TextBlock Text="Pack extension" FontSize="13.5" Foreground="{StaticResource Muted}"/>
+                      </Border>
+                      <Border Background="#FFFFFF" BorderBrush="{StaticResource Muted}" BorderThickness="2" Padding="12,7">
+                        <TextBlock Text="Update" FontSize="13.5" Foreground="{StaticResource Muted}"/>
+                      </Border>
+                    </StackPanel>
+                    <DockPanel Margin="0,12,0,0">
+                      <Border DockPanel.Dock="Right" Background="#FFFFFF" BorderBrush="{StaticResource Red}" BorderThickness="4" Padding="12,4" Margin="8,0,0,0">
+                        <TextBlock Text="Select Folder" FontSize="13.5" FontWeight="Bold"/>
+                      </Border>
+                      <TextBlock DockPanel.Dock="Left" Text="Folder:" FontSize="13.5" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                      <Border Background="#FFFFFF" BorderBrush="{StaticResource Ink}" BorderThickness="2" Padding="8,5">
+                        <TextBlock x:Name="pathText4" FontFamily="Consolas" FontSize="12.5" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
+                      </Border>
+                    </DockPanel>
                   </StackPanel>
                 </Border>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                  <Path Data="M0,2 L4,2 L4,0 L8,0 L8,2 L12,2 L12,6 L14,6 L14,10 L12,10 L12,14 L0,14 Z" Stroke="#8C877C" StrokeThickness="1.1" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                  <TextBlock Text="Extensions" FontSize="15" Foreground="#C9C4B8" VerticalAlignment="Center"/>
+              </Border>
+            </StackPanel>
+
+            <StackPanel x:Name="p5" Visibility="Collapsed">
+              <TextBlock Style="{StaticResource H}" Text="جاهزة"/>
+              <TextBlock Style="{StaticResource P}" Text="إذا ظهرت بطاقة «معنى» في صفحة الإضافات فالتثبيت تم."/>
+              <TextBlock Style="{StaticResource P}" Text="صفحة الإعدادات تفتح لك تلقائيًا: اربط مفتاحك من Gemini أو غيره واضغط «اختبار»."/>
+              <Border Style="{StaticResource Mock}" Margin="0,14,0,0" FlowDirection="RightToLeft">
+                <Border Style="{StaticResource MockIn}">
+                  <StackPanel Orientation="Horizontal">
+                    <Border Style="{StaticResource Key}" FlowDirection="LeftToRight" Margin="0,0,8,0"><TextBlock Style="{StaticResource KeyText}" Text="Alt + M"/></Border>
+                    <TextBlock Text="ترجمة صور المانجا" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,26,0"/>
+                    <Border Style="{StaticResource Key}" FlowDirection="LeftToRight" Margin="0,0,8,0"><TextBlock Style="{StaticResource KeyText}" Text="Alt + T"/></Border>
+                    <TextBlock Text="ترجمة الصفحة" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                  </StackPanel>
+                </Border>
+              </Border>
+              <Border Style="{StaticResource Cap}" Margin="0,18,0,0">
+                <StackPanel>
+                  <TextBlock Style="{StaticResource CapText}" Text="ما ظهرت البطاقة؟ ارجع خطوة وتأكد إن وضع المطوّر شغّال، ثم اضغط Load unpacked مرة ثانية."/>
+                  <TextBlock Style="{StaticResource CapText}" Margin="0,4,0,0" Text="للتحديث لاحقًا: شغّل المثبّت الجديد، ثم اضغط زر إعادة التحميل على بطاقة الإضافة."/>
                 </StackPanel>
-              </DockPanel>
-            </Border>
-          </StackPanel>
-
-          <StackPanel x:Name="p4" Visibility="Collapsed">
-            <TextBlock Style="{StaticResource H}" Text="حمّل الإضافة"/>
-            <TextBlock Style="{StaticResource P}" Text="١. اضغط زر Load unpacked."/>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-              <TextBlock Text="٢. في نافذة اختيار المجلد اضغط" VerticalAlignment="Center"/>
-              <Border Style="{StaticResource Key}" FlowDirection="LeftToRight"><TextBlock Text="Ctrl + V" FontSize="12"/></Border>
-              <TextBlock Text="في خانة Folder ثم اضغط Select Folder." VerticalAlignment="Center"/>
+              </Border>
             </StackPanel>
-            <TextBlock Style="{StaticResource Small}" Text="مسار المجلد انّسخ لك جاهز. بالعربي اسم الزر «تحميل إضافة تم فك حزمتها»."/>
-            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-              <Button x:Name="btnCopyPath" Style="{StaticResource Btn}" Content="انسخ المسار مرة ثانية"/>
-              <TextBlock x:Name="copied4" Text="انّسخ" Foreground="#8FB184" FontSize="12.5" VerticalAlignment="Center" Margin="10,0,0,0" Visibility="Hidden"/>
-            </StackPanel>
-            <Border Style="{StaticResource Mock}" Margin="0,16,0,0">
-              <StackPanel>
-                <StackPanel Orientation="Horizontal">
-                  <Border BorderBrush="{StaticResource Gold}" BorderThickness="1" Padding="12,5" Margin="0,0,8,0">
-                    <TextBlock Text="Load unpacked" FontSize="12.5"/>
-                  </Border>
-                  <Border BorderBrush="#3A3833" BorderThickness="1" Padding="12,5" Margin="0,0,8,0">
-                    <TextBlock Text="Pack extension" FontSize="12.5" Foreground="#7F7A70"/>
-                  </Border>
-                  <Border BorderBrush="#3A3833" BorderThickness="1" Padding="12,5">
-                    <TextBlock Text="Update" FontSize="12.5" Foreground="#7F7A70"/>
-                  </Border>
-                </StackPanel>
-                <DockPanel Margin="0,12,0,0">
-                  <Border DockPanel.Dock="Right" BorderBrush="{StaticResource Gold}" BorderThickness="1" Padding="12,4" Margin="8,0,0,0">
-                    <TextBlock Text="Select Folder" FontSize="12.5"/>
-                  </Border>
-                  <TextBlock DockPanel.Dock="Left" Text="Folder:" FontSize="12.5" Foreground="#9C968A" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                  <Border Background="#0A0A0B" BorderBrush="#3A3833" BorderThickness="1" Padding="8,4">
-                    <TextBlock x:Name="pathText4" FontFamily="Consolas" FontSize="12" Foreground="{StaticResource GoldHi}" TextTrimming="CharacterEllipsis"/>
-                  </Border>
-                </DockPanel>
-              </StackPanel>
-            </Border>
-          </StackPanel>
 
-          <StackPanel x:Name="p5" Visibility="Collapsed">
-            <TextBlock Style="{StaticResource H}" Text="جاهزة"/>
-            <TextBlock Style="{StaticResource P}" Text="إذا ظهرت بطاقة «معنى» في صفحة الإضافات فالتثبيت تم."/>
-            <TextBlock Style="{StaticResource P}" Text="صفحة الإعدادات تفتح لك تلقائيًا: اربط مفتاحك من Gemini أو غيره واضغط «اختبار»."/>
-            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-              <Border Style="{StaticResource Key}" FlowDirection="LeftToRight" Margin="0,0,6,0"><TextBlock Text="Alt + T" FontSize="12"/></Border>
-              <TextBlock Text="ترجمة الصفحة" VerticalAlignment="Center" Margin="0,0,22,0"/>
-              <Border Style="{StaticResource Key}" FlowDirection="LeftToRight" Margin="0,0,6,0"><TextBlock Text="Alt + M" FontSize="12"/></Border>
-              <TextBlock Text="ترجمة صور المانجا" VerticalAlignment="Center"/>
-            </StackPanel>
-            <Border BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0" Margin="0,22,0,0" Padding="0,14,0,0">
-              <StackPanel>
-                <TextBlock Style="{StaticResource Small}" Text="ما ظهرت البطاقة؟ ارجع خطوة وتأكد إن وضع المطوّر شغّال، ثم اضغط Load unpacked مرة ثانية."/>
-                <TextBlock Style="{StaticResource Small}" Text="للتحديث لاحقًا: شغّل المثبّت الجديد، ثم اضغط زر إعادة التحميل على بطاقة الإضافة."/>
-              </StackPanel>
-            </Border>
-          </StackPanel>
-
+          </Grid>
         </Grid>
       </Grid>
 
       <!-- footer -->
-      <Border Grid.Row="2" BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0" Background="#0E0E0F">
-        <DockPanel Margin="20,0">
-          <Button x:Name="btnNext" DockPanel.Dock="Right" Style="{StaticResource BtnPrimary}" MinWidth="128" VerticalAlignment="Center">
+      <Border Grid.Row="2" Background="{StaticResource Paper}" BorderBrush="{StaticResource Ink}" BorderThickness="0,4,0,0">
+        <DockPanel Margin="26,0,22,4">
+          <Button x:Name="btnNext" DockPanel.Dock="Right" Style="{StaticResource BtnPrimary}" MinWidth="150" VerticalAlignment="Center">
             <StackPanel Orientation="Horizontal">
               <TextBlock x:Name="nextText" Text="ابدأ التثبيت" VerticalAlignment="Center"/>
-              <Path x:Name="nextArrow" Data="M0,0 L5,5 L0,10" Stroke="#0E0E0F" StrokeThickness="1.6" VerticalAlignment="Center" Margin="10,1,0,0"/>
+              <Path x:Name="nextArrow" Data="M0,0 L6,6 L0,12" Stroke="#FFFFFF" StrokeThickness="2.4" VerticalAlignment="Center" Margin="12,1,0,0"/>
             </StackPanel>
           </Button>
-          <Button x:Name="btnBack" DockPanel.Dock="Left" Style="{StaticResource Btn}" MinWidth="104" VerticalAlignment="Center">
+          <Button x:Name="btnBack" DockPanel.Dock="Left" Style="{StaticResource Btn}" MinWidth="112" VerticalAlignment="Center">
             <StackPanel Orientation="Horizontal">
-              <Path Data="M5,0 L0,5 L5,10" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.4" VerticalAlignment="Center" Margin="0,1,10,0"/>
+              <Path Data="M6,0 L0,6 L6,12" Stroke="{StaticResource Ink}" StrokeThickness="2.2" VerticalAlignment="Center" Margin="0,1,10,0"/>
               <TextBlock Text="السابق" VerticalAlignment="Center"/>
             </StackPanel>
           </Button>
-          <TextBlock x:Name="stepText" Foreground="{StaticResource Muted}" FontSize="12.5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          <TextBlock x:Name="stepText" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </DockPanel>
       </Border>
     </Grid>

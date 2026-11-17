@@ -23,8 +23,8 @@ using Microsoft.Win32;
 [assembly: AssemblyTitle("Maana Setup")]
 [assembly: AssemblyProduct("Maana")]
 [assembly: AssemblyDescription("Installs the Maana translation extension")]
-[assembly: AssemblyVersion("0.1.0.0")]
-[assembly: AssemblyFileVersion("0.1.0.0")]
+[assembly: AssemblyVersion("0.1.1.0")]
+[assembly: AssemblyFileVersion("0.1.1.0")]
 
 namespace MaanaSetup
 {
@@ -98,8 +98,14 @@ namespace MaanaSetup
         {
             opt = options;
             Window = (Window)XamlReader.Load(Resource("ui.xaml"));
-            try { Window.Icon = BitmapFrame.Create(Resource("icon.png"), BitmapCreateOptions.None, BitmapCacheOption.OnLoad); }
+            try
+            {
+                BitmapFrame icon = BitmapFrame.Create(Resource("icon.png"), BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                Window.Icon = icon;
+                Find<Image>("logo").Source = icon;
+            }
             catch { }
+            DrawSpeedLines();
 
             target = opt.Target ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Maana", "extension");
             for (int i = 0; i <= Last; i++) pages[i] = Find<FrameworkElement>("p" + i);
@@ -178,34 +184,35 @@ namespace MaanaSetup
         void BuildRail()
         {
             rail.Children.Clear();
-            Brush gold = (Brush)Window.FindResource("Gold");
+            Brush ink = (Brush)Window.FindResource("Ink");
+            Brush red = (Brush)Window.FindResource("Red");
             Brush muted = (Brush)Window.FindResource("Muted");
-            Brush text = (Brush)Window.FindResource("Text");
-            Brush dim = new SolidColorBrush(Color.FromRgb(0x5D, 0x59, 0x4F));
             for (int k = 1; k <= Last; k++)
             {
                 bool current = k == step;
                 bool done = k < step || (k == 1 && copied && step != 1);
 
                 Grid row = new Grid();
-                row.Height = 40;
-                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3) });
-                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(46) });
+                row.Height = 50;
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(20) });
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(32) });
                 row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-                if (current) row.Background = new SolidColorBrush(Color.FromRgb(0x19, 0x18, 0x16));
 
-                Border bar = new Border();
-                bar.Background = current ? gold : Brushes.Transparent;
-                Grid.SetColumn(bar, 0);
-                row.Children.Add(bar);
-
+                // A numbered square: red for the step in hand, ink once it is done.
+                Border box = new Border();
+                box.Width = 32;
+                box.Height = 32;
+                box.BorderThickness = new Thickness(3);
+                box.BorderBrush = current ? red : ink;
+                box.Background = current ? red : done ? ink : Brushes.White;
+                box.VerticalAlignment = VerticalAlignment.Center;
                 FrameworkElement mark;
                 if (done)
                 {
                     System.Windows.Shapes.Path check = new System.Windows.Shapes.Path();
                     check.Data = Geometry.Parse("M0,5 L4,9 L11,0");
-                    check.Stroke = gold;
-                    check.StrokeThickness = 1.6;
+                    check.Stroke = Brushes.White;
+                    check.StrokeThickness = 2.4;
                     check.FlowDirection = FlowDirection.LeftToRight;
                     mark = check;
                 }
@@ -213,25 +220,51 @@ namespace MaanaSetup
                 {
                     TextBlock num = new TextBlock();
                     num.Text = Digits[k - 1];
-                    num.FontSize = 14;
-                    num.Foreground = current ? gold : dim;
+                    num.FontSize = 16;
+                    num.FontWeight = FontWeights.Bold;
+                    num.Foreground = current ? Brushes.White : ink;
                     mark = num;
                 }
                 mark.HorizontalAlignment = HorizontalAlignment.Center;
                 mark.VerticalAlignment = VerticalAlignment.Center;
-                Grid.SetColumn(mark, 1);
-                row.Children.Add(mark);
+                box.Child = mark;
+                Grid.SetColumn(box, 1);
+                row.Children.Add(box);
 
                 TextBlock label = new TextBlock();
                 label.Text = StepNames[k - 1];
+                label.Margin = new Thickness(12, 0, 0, 0);
                 label.VerticalAlignment = VerticalAlignment.Center;
-                label.Foreground = current ? text : done ? muted : dim;
-                if (current) label.FontWeight = FontWeights.SemiBold;
+                label.Foreground = current || done ? ink : muted;
+                label.FontWeight = current ? FontWeights.Bold : FontWeights.SemiBold;
                 Grid.SetColumn(label, 2);
                 row.Children.Add(label);
 
                 rail.Children.Add(row);
             }
+        }
+
+        // Faint speed lines fanning out behind the page, as on a comic splash page.
+        void DrawSpeedLines()
+        {
+            Canvas fx = Find<Canvas>("fx");
+            PathGeometry g = new PathGeometry();
+            Point origin = new Point(-30, 70);
+            for (double a = -58; a <= 74; a += 4.4)
+            {
+                double r0 = a * Math.PI / 180.0;
+                double r1 = (a + 1.15) * Math.PI / 180.0;
+                PathFigure f = new PathFigure();
+                f.StartPoint = origin;
+                f.IsClosed = true;
+                f.Segments.Add(new LineSegment(new Point(origin.X + 1400 * Math.Cos(r0), origin.Y + 1400 * Math.Sin(r0)), true));
+                f.Segments.Add(new LineSegment(new Point(origin.X + 1400 * Math.Cos(r1), origin.Y + 1400 * Math.Sin(r1)), true));
+                g.Figures.Add(f);
+            }
+            System.Windows.Shapes.Path lines = new System.Windows.Shapes.Path();
+            lines.Data = g;
+            lines.Fill = new SolidColorBrush(Color.FromArgb(15, 20, 20, 20));
+            fx.Children.Add(lines);
         }
 
         // ---------- step 1: copy the extension ----------

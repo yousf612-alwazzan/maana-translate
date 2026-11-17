@@ -6,6 +6,7 @@ header {
   border-bottom: 1px solid var(--line);
 }
 .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.logo { flex: none; display: block; }
 .mark {
   width: 30px; height: 30px; flex: none;
   display: grid; place-items: center;
