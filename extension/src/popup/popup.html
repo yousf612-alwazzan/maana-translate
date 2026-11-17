@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>معنى</title>
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="mark" aria-hidden="true">ع</span>
+      <div>
+        <h1>معنى</h1>
+        <p id="provider" class="muted">...</p>
+      </div>
+    </div>
+    <button id="openOptions" class="btn quiet sq" type="button" title="الإعدادات والمزودين" aria-label="الإعدادات والمزودين">
+      <svg class="ic" viewBox="0 0 16 16"><path d="M2 4h6M12 4h2M2 8h2M8 8h6M2 12h7M13 12h1"/><path d="M8 2.5h2.5v3H8zM4 6.5h2.5v3H4zM9.5 10.5H12v3H9.5z"/></svg>
+    </button>
+  </header>
+
+  <main>
+    <div id="consent" class="notice consent" hidden>
+      <p><strong>قبل ما تبدأ</strong></p>
+      <p>عشان تترجم، الإضافة ترسل نص الصفحة أو الصورة اللي تطلب ترجمتها لمزود الذكاء الاصطناعي اللي تختاره إنت، وبمفتاحك. ما ينرسل شي لنا ولا لأي طرف ثاني، وما ينرسل شي إلا لما تطلب الترجمة.</p>
+      <button id="consentBtn" class="btn" type="button">موافق</button>
+    </div>
+
+    <button id="btnPage" class="act" type="button">
+      <svg class="ic" viewBox="0 0 16 16"><path d="M3.5 1.5h6l3 3v10h-9z"/><path d="M9.5 1.5v3h3M5.5 8h5M5.5 10.5h5M5.5 5.5h2"/></svg>
+      <span class="lbl">ترجم الصفحة</span>
+      <kbd>Alt+T</kbd>
+    </button>
+    <button id="btnImages" class="act" type="button">
+      <svg class="ic" viewBox="0 0 16 16"><path d="M1.5 2.5h13v11h-13z"/><path d="M4 5h6v4H7l-2 2V9H4z"/></svg>
+      <span class="lbl">ترجم الصور</span>
+      <kbd>Alt+M</kbd>
+    </button>
+
+    <p id="progress" class="muted line" hidden></p>
+    <div id="msg" class="notice" hidden>
+      <p id="msgText"></p>
+      <button id="msgBtn" class="btn" type="button">افتح الإعدادات</button>
+    </div>
+
+    <div class="row">
+      <label for="target">ترجم إلى</label>
+      <select id="target"></select>
+    </div>
+    <div class="row sub" id="styleRow">
+      <label for="style">الأسلوب</label>
+      <select id="style">
+        <option value="fusha">فصحى مبسطة</option>
+        <option value="kuwaiti">كويتي</option>
+      </select>
+    </div>
+    <label class="check" id="autoRow">
+      <input type="checkbox" id="auto">
+      <span>ترجم هذا الموقع تلقائيًا</span>
+    </label>
+    <p id="host" class="muted ltr hostline"></p>
+  </main>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

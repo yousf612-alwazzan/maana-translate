@@ -1,0 +1,17 @@
+{
+  "extName": {
+    "message": "Maana: Meaning-Based Page & Manga Translator"
+  },
+  "extShortName": {
+    "message": "Maana"
+  },
+  "extDescription": {
+    "message": "Meaning-based translation from any language into Arabic or any language you pick: pages in place, manga bubbles on the image."
+  },
+  "cmdPage": {
+    "message": "Translate the page, or bring back the original"
+  },
+  "cmdImages": {
+    "message": "Translate manga and comic images, or hide the translation"
+  }
+}

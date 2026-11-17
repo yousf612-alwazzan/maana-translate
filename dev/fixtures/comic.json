@@ -1,0 +1,289 @@
+{
+  "page1": {
+    "w": 1000,
+    "h": 1500,
+    "regions": [
+      {
+        "box": [
+          78,
+          62,
+          442,
+          93
+        ],
+        "type": "caption",
+        "text": "Saturday morning. Bake sale day.",
+        "ar": "صباح السبت. يوم بيع الكعك."
+      },
+      {
+        "box": [
+          171,
+          149,
+          359,
+          250
+        ],
+        "type": "bubble",
+        "text": "Don't worry, it'll be a piece of cake!",
+        "ar": "لا تقلق، الأمر في غاية السهولة!"
+      },
+      {
+        "box": [
+          652,
+          123,
+          838,
+          256
+        ],
+        "type": "bubble",
+        "text": "You said that last week, and we burned everything!",
+        "ar": "قلت ذلك الأسبوع الماضي واحترق كل شيء!"
+      },
+      {
+        "box": [
+          110,
+          512,
+          340,
+          582
+        ],
+        "type": "bubble",
+        "text": "Let's hit the sack early tonight.",
+        "ar": "لننم باكرا هذه الليلة."
+      },
+      {
+        "box": [
+          640,
+          512,
+          840,
+          613
+        ],
+        "type": "bubble",
+        "text": "I'm so nervous, I could never sleep!",
+        "ar": "أنا متوتر جدا، لن أستطيع النوم أبدا!"
+      },
+      {
+        "box": [
+          275,
+          632,
+          375,
+          743
+        ],
+        "type": "bubble",
+        "text": "That's easier said than done.",
+        "ar": "هذا أسهل قولا من فعل."
+      },
+      {
+        "box": [
+          171,
+          964,
+          369,
+          1086
+        ],
+        "type": "bubble",
+        "text": "Somebody spilled the beans about our secret recipe...",
+        "ar": "أحدهم أفشى سر وصفتنا..."
+      },
+      {
+        "box": [
+          644,
+          967,
+          846,
+          1068
+        ],
+        "type": "bubble",
+        "text": "Great. Now it's raining cats and dogs too!",
+        "ar": "رائع. والآن تمطر بغزارة أيضا!"
+      },
+      {
+        "box": [
+          78,
+          1297,
+          472,
+          1366
+        ],
+        "type": "bubble",
+        "text": "Let's not cry over spilled milk. Open the stall!",
+        "ar": "لا داعي للبكاء على اللبن المسكوب. افتح الكشك!"
+      },
+      {
+        "box": [
+          572,
+          1291,
+          968,
+          1437
+        ],
+        "type": "sfx",
+        "text": "CRASH!",
+        "ar": "طاخ!"
+      }
+    ]
+  },
+  "strip": {
+    "w": 800,
+    "h": 6000,
+    "regions": [
+      {
+        "box": [
+          61,
+          51,
+          418,
+          108
+        ],
+        "type": "caption",
+        "text": "Later that day, at the bake sale stall.",
+        "ar": "في وقت لاحق من ذلك اليوم، عند كشك بيع الكعك."
+      },
+      {
+        "box": [
+          144,
+          194,
+          376,
+          295
+        ],
+        "type": "bubble",
+        "text": "Is anyone actually coming, or are we wasting our time?",
+        "ar": "هل سيأتي أحد فعلا أم أننا نضيع وقتنا؟"
+      },
+      {
+        "box": [
+          503,
+          359,
+          657,
+          460
+        ],
+        "type": "bubble",
+        "text": "Hold your horses. It's still early.",
+        "ar": "تمهل قليلا. ما زال الوقت مبكرا."
+      },
+      {
+        "box": [
+          169,
+          635,
+          491,
+          714
+        ],
+        "type": "sign",
+        "text": "BAKE SALE - TODAY ONLY",
+        "ar": "بيع الكعك - اليوم فقط"
+      },
+      {
+        "box": [
+          460,
+          794,
+          670,
+          895
+        ],
+        "type": "bubble",
+        "text": "Look, a customer is heading our way!",
+        "ar": "انظر، زبون يتجه نحونا!"
+      },
+      {
+        "box": [
+          480,
+          1099,
+          680,
+          1200
+        ],
+        "type": "bubble",
+        "text": "Quick, act natural. Don't scare them off!",
+        "ar": "بسرعة، تصرف بشكل طبيعي. لا تخيفه!"
+      },
+      {
+        "box": [
+          114,
+          1311,
+          366,
+          1377
+        ],
+        "type": "bubble",
+        "text": "I'm so nervous, I'm walking on eggshells.",
+        "ar": "أنا متوتر جدا، أمشي على قشر البيض."
+      },
+      {
+        "box": [
+          147,
+          1558,
+          373,
+          1691
+        ],
+        "type": "bubble",
+        "text": "Welcome! Everything is half price today. A real steal!",
+        "ar": "أهلا بك! كل شيء بنصف السعر اليوم. صفقة رابحة!"
+      },
+      {
+        "box": [
+          421,
+          1799,
+          659,
+          1891
+        ],
+        "type": "bubble",
+        "text": "The customer eyed the last cake with a hungry look...",
+        "ar": "حدق الزبون في آخر كعكة بنظرة جائعة..."
+      },
+      {
+        "box": [
+          44,
+          2082,
+          446,
+          2217
+        ],
+        "type": "sfx",
+        "text": "MUNCH!",
+        "ar": "قضم!"
+      },
+      {
+        "box": [
+          486,
+          2199,
+          674,
+          2300
+        ],
+        "type": "bubble",
+        "text": "That was the best cake I've ever had!",
+        "ar": "كانت أفضل كعكة تذوقتها في حياتي!"
+      },
+      {
+        "box": [
+          155,
+          2619,
+          355,
+          2720
+        ],
+        "type": "bubble",
+        "text": "See? I told you it would be a piece of cake.",
+        "ar": "ألم أقل لك؟ قلت لك إن الأمر سهل جدا."
+      },
+      {
+        "box": [
+          414,
+          3205,
+          716,
+          3274
+        ],
+        "type": "bubble",
+        "text": "We sold out in an hour. Let's call it a day.",
+        "ar": "بعنا كل شيء في ساعة. لننه يومنا."
+      },
+      {
+        "box": [
+          148,
+          3494,
+          352,
+          3595
+        ],
+        "type": "bubble",
+        "text": "I'm exhausted. I'm going to hit the sack.",
+        "ar": "أنا منهك. سأذهب إلى النوم."
+      },
+      {
+        "box": [
+          478,
+          4008,
+          652,
+          4141
+        ],
+        "type": "bubble",
+        "text": "Sleep tight. Tomorrow we bake twice as much!",
+        "ar": "نم جيدا. غدا سنخبز ضعف الكمية!"
+      }
+    ]
+  }
+}

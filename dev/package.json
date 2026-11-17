@@ -1,0 +1,13 @@
+{
+  "name": "maana-dev-harness",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "fixtures": "node make-fixtures.mjs",
+    "mock": "node mock-server.mjs",
+    "test": "node run-test.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "^1.50.0"
+  }
+}

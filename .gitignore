@@ -1,0 +1,17 @@
+# dependencies and build output
+node_modules/
+dist/
+installer/obj/
+
+# test output (screenshots and logs made on the developer's machine)
+dev/out/
+*.log
+
+# kept local: the store submission kit and the separate privacy-page repository
+store/
+site/
+dev/make-store-assets.mjs
+
+# scratch and generated test pages
+dev/debug-comic.mjs
+dev/fixtures/lang-*.html

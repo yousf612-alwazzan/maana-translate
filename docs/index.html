@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>معنى — ترجمة المانجا والصفحات بالمعنى</title>
+<meta name="description" content="إضافة للمتصفح تكتب الترجمة داخل فقاعات المانجا وتترجم الصفحات في مكانها، من أي لغة إلى العربية أو أي لغة تختارها، ترجمة بالمعنى.">
+<link rel="icon" href="img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #fbf8f0; --ink: #141414; --red: #e23a2b; --note: #ffe58a; --tone: rgba(20, 20, 20, .16);
+    --display: "Lalezar", "Tajawal", Tahoma, sans-serif;
+    --body: "Tajawal", "Segoe UI", Tahoma, sans-serif;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 500 17px/1.75 var(--body); }
+  a { color: var(--ink); }
+  img { display: block; max-width: 100%; height: auto; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  .ltr { direction: ltr; unicode-bidi: isolate; }
+  kbd { direction: ltr; unicode-bidi: isolate; white-space: nowrap; display: inline-block; margin: 0 4px; font: 700 .82em/1.6 Consolas, "Cascadia Mono", monospace; border: 2px solid var(--ink); background: #fff; padding: 0 7px; box-shadow: -2px 2px 0 var(--ink); }
+
+  /* screentone: the dot shading of printed manga */
+  .tone, .panel.tone { background-image: radial-gradient(circle, var(--tone) 1.3px, transparent 1.5px); background-size: 8px 8px; }
+  .tone-dark, .panel.tone-dark { background-color: var(--ink); background-image: radial-gradient(circle, rgba(255, 255, 255, .2) 1.2px, transparent 1.4px); background-size: 8px 8px; color: #fff; }
+
+  /* a panel: thick ink frame, like one frame of a page */
+  .panel { position: relative; background: #fff; border: 4px solid var(--ink); }
+  .cap { display: inline-block; background: var(--note); border: 3px solid var(--ink); padding: 2px 14px; font-weight: 700; font-size: 15px; line-height: 1.7; }
+
+  header.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 70px; }
+  .brand { display: flex; align-items: center; gap: 12px; font: 400 30px/1 var(--display); }
+  .mark { width: 42px; height: 42px; display: grid; place-items: center; background: var(--ink); color: var(--paper); font: 700 26px/1 "Segoe UI", Tahoma, sans-serif; padding-bottom: 5px;
+    clip-path: polygon(0 0, calc(100% - 11px) 0, 100% 11px, 100% 100%, 0 100%); }
+  nav.links { display: flex; gap: 6px; font-weight: 700; font-size: 16px; }
+  nav.links a { text-decoration: none; padding: 2px 12px; border: 3px solid transparent; }
+  nav.links a:hover, nav.links a:focus-visible { border-color: var(--ink); background: var(--note); outline: none; }
+
+  /* ---------- opening page ---------- */
+  .hero { overflow: hidden; padding: 44px 44px 40px;
+    background-image: repeating-conic-gradient(from 8deg at 6% 28%, transparent 0deg 3.4deg, rgba(20, 20, 20, .07) 3.4deg 4.4deg); }
+  .hero-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 36px; align-items: center; }
+  h1 { font: 400 76px/1.12 var(--display); margin: 14px 0 12px; letter-spacing: 0; }
+  h1 em { font-style: normal; color: var(--red); }
+  .lead { font-size: 20px; margin: 0 0 26px; max-width: 26em; }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; }
+  .dl { display: inline-flex; align-items: center; gap: 12px; height: 60px; padding: 0 30px; background: var(--ink); color: #fff; border: 4px solid var(--ink);
+    font: 400 28px/1 var(--display); text-decoration: none; box-shadow: -7px 7px 0 var(--red); transition: transform .12s, box-shadow .12s; }
+  .dl:hover { transform: translate(-3px, 3px); box-shadow: -4px 4px 0 var(--red); }
+  .dl:active { transform: translate(-7px, 7px); box-shadow: 0 0 0 var(--red); }
+  .dl:focus-visible, .alt:focus-visible { outline: 4px solid var(--red); outline-offset: 4px; }
+  .dl svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: square; }
+  .alt { font-weight: 700; font-size: 16px; padding: 4px 2px; border-bottom: 3px solid var(--ink); text-decoration: none; }
+  .alt:hover { background: var(--note); }
+  .meta { margin: 22px 0 0; font-size: 15px; font-weight: 700; }
+
+  /* speech bubbles drawn with plain boxes: an ink tail under a white one */
+  .bubble { position: relative; background: #fff; border: 4px solid var(--ink); border-radius: 46% / 50%; padding: 22px 30px; text-align: center; font-weight: 700; line-height: 1.5; }
+  .bubble::before, .bubble::after { content: ""; position: absolute; clip-path: polygon(0 0, 100% 0, 18% 100%); }
+  .bubble::before { bottom: -30px; inset-inline-start: 24%; width: 36px; height: 32px; background: var(--ink); }
+  .bubble::after { bottom: -19px; inset-inline-start: calc(24% + 5.5px); width: 25px; height: 23px; background: #fff; }
+  .bubble.flip::before, .bubble.flip::after { transform: scaleX(-1); }
+  .demo { position: relative; display: grid; gap: 34px; padding: 6px 0 26px; }
+  .demo .bubble.src { justify-self: start; width: 78%; font: 700 21px/1.4 "Comic Sans MS", "Segoe UI", sans-serif; direction: ltr; }
+  .demo .bubble.out { justify-self: end; width: 78%; font: 400 34px/1.3 var(--display); }
+  .demo .wrong { justify-self: center; display: flex; align-items: center; gap: 12px; font-weight: 700; }
+  .demo .wrong s { text-decoration-thickness: 3px; text-decoration-color: var(--red); }
+  .demo .wrong .x { width: 30px; height: 30px; flex: none; background: var(--red); clip-path: polygon(20% 0, 50% 30%, 80% 0, 100% 20%, 70% 50%, 100% 80%, 80% 100%, 50% 70%, 20% 100%, 0 80%, 30% 50%, 0 20%); }
+  .burst { position: absolute; top: -18px; inset-inline-end: -14px; width: 104px; height: 104px; display: grid; place-items: center; background: var(--red); color: #fff; font: 400 25px/1 var(--display); transform: rotate(-12deg);
+    clip-path: polygon(50% 0, 61% 14%, 78% 7%, 80% 25%, 97% 28%, 88% 43%, 100% 56%, 85% 65%, 89% 83%, 71% 82%, 63% 99%, 50% 86%, 37% 99%, 29% 82%, 11% 83%, 15% 65%, 0 56%, 12% 43%, 3% 28%, 20% 25%, 22% 7%, 39% 14%); }
+
+  /* ---------- chapters ---------- */
+  section { padding: 54px 0 8px; }
+  .chapter { display: flex; align-items: baseline; gap: 16px; margin: 0 0 20px; }
+  .chapter .no { font: 400 20px/1 var(--display); background: var(--ink); color: #fff; padding: 9px 14px 5px; transform: skew(-8deg); }
+  h2 { font: 400 46px/1.15 var(--display); margin: 0; }
+  .sub { margin: -8px 0 22px; max-width: 44em; }
+
+  .page { display: grid; gap: 16px; }
+  .two { grid-template-columns: 1fr 1fr; }
+  .shot { padding: 0; overflow: hidden; }
+  .shot .cap { display: block; border: 0; border-bottom: 4px solid var(--ink); padding: 5px 16px 3px; font-size: 17px; }
+  .shot.now .cap { background: var(--red); color: #fff; }
+  .shot img { width: 100%; }
+  .shot.text img { border-top: 0; }
+
+  /* the four install steps laid out like a four-frame strip */
+  .strip { grid-template-columns: repeat(4, 1fr); counter-reset: f; }
+  .frame { counter-increment: f; padding: 62px 18px 20px; min-height: 250px; }
+  .frame::before { content: counter(f); position: absolute; top: -4px; inset-inline-start: -4px; width: 54px; height: 54px; display: grid; place-items: center; background: var(--ink); color: #fff; font: 400 32px/1 var(--display); padding-top: 4px; }
+  .frame h3 { font: 400 26px/1.2 var(--display); margin: 0 0 8px; }
+  .frame p { margin: 0 0 8px; font-size: 16px; line-height: 1.7; }
+  .frame .fine { font-size: 14px; font-weight: 400; border-top: 3px dotted var(--ink); padding-top: 8px; margin-top: 12px; }
+  .frame:nth-child(2) { transform: translateY(14px); }
+  .frame:nth-child(4) { transform: translateY(14px); }
+  .screens { grid-template-columns: 1fr 1fr; margin-top: 34px; }
+  .screens .panel { padding: 0; overflow: hidden; border-color: var(--ink); }
+
+  .keys { grid-template-columns: repeat(4, 1fr); }
+  .key { padding: 18px; }
+  .key b { display: block; font: 400 23px/1.25 var(--display); margin-bottom: 4px; }
+  .key p { margin: 0; font-size: 16px; line-height: 1.7; }
+  .key.tone-dark a { color: #fff; }
+
+  .privacy { padding: 28px 30px; display: grid; grid-template-columns: auto 1fr; gap: 30px; align-items: center; }
+  .privacy .think { width: 210px; }
+  .privacy .think .bubble { font: 400 27px/1.25 var(--display); padding: 26px 18px; }
+  ul.plain { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  ul.plain li { position: relative; padding-inline-start: 26px; }
+  ul.plain li::before { content: ""; position: absolute; inset-inline-start: 2px; top: .55em; width: 12px; height: 12px; background: var(--ink); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+
+  .en { direction: ltr; text-align: left; padding: 26px 30px; font-family: "Segoe UI", Tahoma, sans-serif; font-weight: 400; font-size: 16px; }
+  .en h2 { font: 700 26px/1.2 "Segoe UI", sans-serif; margin-bottom: 8px; }
+  .en ol { padding-left: 22px; margin: 8px 0 12px; }
+
+  footer { margin-top: 60px; background: var(--ink); color: #fff; padding: 22px 0 30px; font-size: 15px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+  footer a { color: #fff; }
+
+  @media (max-width: 900px) {
+    .hero { padding: 30px 22px; }
+    .hero-grid { grid-template-columns: 1fr; }
+    h1 { font-size: 52px; }
+    h2 { font-size: 36px; }
+    .two, .screens { grid-template-columns: 1fr; }
+    .strip, .keys { grid-template-columns: 1fr 1fr; }
+    .frame:nth-child(n) { transform: none; }
+    .privacy { grid-template-columns: 1fr; }
+    nav.links { display: none; }
+  }
+  @media (max-width: 520px) {
+    .strip, .keys { grid-template-columns: 1fr; }
+    h1 { font-size: 44px; }
+    .dl { font-size: 24px; padding: 0 22px; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .dl { transition: none; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span class="mark" aria-hidden="true">ع</span><span>معنى</span></div>
+    <nav class="links" aria-label="أقسام الصفحة">
+      <a href="#see">الفرق</a>
+      <a href="#install">التثبيت</a>
+      <a href="#key">المفتاح</a>
+      <a href="#privacy">الخصوصية</a>
+      <a href="#english" class="ltr">English</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="panel hero">
+    <div class="hero-grid">
+      <div>
+        <span class="cap">لقرّاء المانجا والكوميك اللي ملّوا من الترجمة الحرفية</span>
+        <h1>الترجمة داخل الفقاعة، <em>وبالمعنى</em></h1>
+        <p class="lead">إضافة للمتصفح تمسح النص الأصلي من الفقاعة وتكتب الترجمة مكانه، وتترجم أي صفحة في مكانها. من أي لغة إلى العربية، أو لأي لغة تختارها.</p>
+        <div class="actions">
+          <a class="dl" href="https://github.com/yousf612-alwazzan/maana-translate/releases/latest/download/Maana-Setup.exe">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v13M6 11l6 6 6-6M4 21h16"/></svg>
+            حمّل المثبّت
+          </a>
+          <a class="alt" href="https://github.com/yousf612-alwazzan/maana-translate/releases/latest/download/maana-translate.zip">أو ملف ZIP للتثبيت اليدوي</a>
+        </div>
+        <p class="meta"><span id="ver"></span>ويندوز 10 و 11 · Chrome و Edge و Brave</p>
+      </div>
+      <div class="demo" aria-label="مثال: جملة إنجليزية وترجمتها بالمعنى">
+        <span class="burst" aria-hidden="true">مجاني</span>
+        <div class="bubble src">It's a piece of cake!</div>
+        <div class="wrong"><span class="x" aria-hidden="true"></span><span>مو <s>«إنها قطعة من الكعك»</s></span></div>
+        <div class="bubble out flip">سهلة مرة!</div>
+      </div>
+    </div>
+  </div>
+
+  <section id="see">
+    <div class="chapter"><span class="no">الفصل ١</span><h2>شوف الفرق</h2></div>
+    <p class="sub">اللقطات من تجربة حقيقية بنموذج ذكاء اصطناعي، على رسمة وصفحة صنعناهم للاختبار.</p>
+    <div class="page two">
+      <figure class="panel shot" style="margin:0"><span class="cap">الأصل</span><img src="img/comic-before.png" width="713" height="652" alt="صفحة كوميك بشخصيات عصا، والحوار بالإنجليزي داخل الفقاعات"></figure>
+      <figure class="panel shot now" style="margin:0"><span class="cap">بعد الترجمة</span><img src="img/comic-after.png" width="713" height="652" alt="نفس صفحة الكوميك والحوار صار عربي داخل نفس الفقاعات"></figure>
+    </div>
+    <div class="page two" style="margin-top:16px">
+      <figure class="panel shot text" style="margin:0"><span class="cap">صفحة عادية</span><img src="img/text-before.png" width="600" height="470" loading="lazy" alt="مقال إنجليزي مليان أمثال وتعابير"></figure>
+      <figure class="panel shot text now" style="margin:0"><span class="cap">نفس الصفحة بالعربي</span><img src="img/text-after.png" width="600" height="470" loading="lazy" alt="نفس المقال مترجم للعربية في مكانه"></figure>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="chapter"><span class="no">الفصل ٢</span><h2>التثبيت في أربع لقطات</h2></div>
+    <p class="sub">المتصفح ما يسمح لأي برنامج يضيف إضافة بنفسه. فالمثبّت ينسخ الملفات، ويمشي معك ثلاث خطوات قصيرة داخل المتصفح، ويجهّز لك اللي تلصقه.</p>
+    <div class="page strip">
+      <div class="panel frame"><h3>شغّل المثبّت</h3><p>ملف واحد صغير. اختر متصفحك واضغط «ابدأ التثبيت».</p><p class="fine">ويندوز يحذّر لأن الملف مو موقّع: <span class="ltr">More info</span> ثم <span class="ltr">Run anyway</span>.</p></div>
+      <div class="panel frame tone"><h3>افتح صفحة الإضافات</h3><p>اضغط «افتح المتصفح»، ثم <kbd>Ctrl + V</kbd> في شريط العنوان و <kbd>Enter</kbd>.</p><p class="fine">العنوان منسوخ لك جاهز.</p></div>
+      <div class="panel frame"><h3>وضع المطوّر</h3><p>شغّل مفتاح <span class="ltr">Developer mode</span> في زاوية الصفحة.</p></div>
+      <div class="panel frame tone"><h3>حمّل الإضافة</h3><p>اضغط <span class="ltr">Load unpacked</span>، ثم <kbd>Ctrl + V</kbd> واضغط <span class="ltr">Select Folder</span>.</p><p class="fine">المسار منسوخ لك جاهز.</p></div>
+    </div>
+    <div class="page screens">
+      <div class="panel"><img src="img/setup-open.png" width="1200" height="822" alt="نافذة المثبّت في خطوة فتح صفحة الإضافات"></div>
+      <div class="panel"><img src="img/setup-dev.png" width="1200" height="822" alt="نافذة المثبّت في خطوة تشغيل وضع المطوّر"></div>
+    </div>
+  </section>
+
+  <section id="key">
+    <div class="chapter"><span class="no">الفصل ٣</span><h2>اربط مفتاحك المجاني</h2></div>
+    <p class="sub">الإضافة تشتغل بمفتاحك إنت من مزود الذكاء الاصطناعي. أسهل خيار مجاني هو Google Gemini.</p>
+    <div class="page keys">
+      <div class="panel key"><b>وافق على البداية</b><p>صفحة الإعدادات تفتح بعد التثبيت. اضغط «موافق».</p></div>
+      <div class="panel key"><b>سوّ المفتاح</b><p>عند Google Gemini اضغط «افتح صفحة المفتاح» وسوّ مفتاح بحسابك.</p></div>
+      <div class="panel key"><b>الصقه واختبره</b><p>اضغط «اختبار». إذا رد عليك بجملة مترجمة فكل شي جاهز.</p></div>
+      <div class="panel key tone-dark"><b>ترجم</b><p><kbd style="color:#141414">Alt + M</kbd> لصور المانجا، و <kbd style="color:#141414">Alt + T</kbd> للصفحة. نفس الاختصار يرجّع الأصل.</p></div>
+    </div>
+  </section>
+
+  <section id="privacy">
+    <div class="chapter"><span class="no">الفصل ٤</span><h2>الخصوصية</h2></div>
+    <div class="panel privacy tone">
+      <div class="think"><div class="bubble">وين تروح صفحاتي؟</div></div>
+      <ul class="plain">
+        <li>الإضافة ما تجمع أي بيانات عنك، وما عندها سيرفر ولا إحصائيات ولا إعلانات.</li>
+        <li>النص أو الصورة اللي تطلب ترجمتها تنرسل من متصفحك مباشرة للمزود اللي اخترته، وبعد موافقتك.</li>
+        <li>المفاتيح والإعدادات تبقى على جهازك.</li>
+        <li>للصفحات الحساسة تقدر تستخدم نموذج يشتغل على جهازك (Ollama) بدون إنترنت.</li>
+        <li>الكود كله مفتوح للقراءة على GitHub. <a href="https://yousf612-alwazzan.github.io/maana-privacy/">سياسة الخصوصية كاملة</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="english" lang="en">
+    <div class="panel en">
+      <h2>English</h2>
+      <p>Maana is a browser extension that writes the translation inside manga and comic speech bubbles and translates web pages in place, by meaning rather than word for word. It translates from any language into Arabic or any language you pick, using your own API key from an AI provider (Google Gemini has a free tier) or a local model through Ollama. The interface is in Arabic.</p>
+      <ol>
+        <li>Download and run <a href="https://github.com/yousf612-alwazzan/maana-translate/releases/latest/download/Maana-Setup.exe">Maana-Setup.exe</a>. Windows warns about an unsigned app: More info, then Run anyway.</li>
+        <li>Follow its three steps in the browser: paste the address it copied for you, switch on Developer mode, press Load unpacked and paste the folder path.</li>
+        <li>In the settings page, agree to the notice, add your API key and press the test button.</li>
+        <li>Alt+M translates comic images, Alt+T translates the page.</li>
+      </ol>
+      <p>Chromium browsers do not allow a program to add an extension by itself, which is why those three steps are manual. Source and releases: <a href="https://github.com/yousf612-alwazzan/maana-translate">github.com/yousf612-alwazzan/maana-translate</a>.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>معنى إضافة مستقلة، وغير تابعة لأي من مزودي الذكاء الاصطناعي المذكورين.</span>
+    <a href="https://github.com/yousf612-alwazzan/maana-translate">الكود والإصدارات على GitHub</a>
+  </div>
+</footer>
+
+<script>
+  // Show the current release number next to the download button.
+  fetch('https://api.github.com/repos/yousf612-alwazzan/maana-translate/releases/latest')
+    .then((r) => (r.ok ? r.json() : null))
+    .then((d) => {
+      const v = d && String(d.tag_name || '').replace(/^v/i, '');
+      if (v) document.getElementById('ver').textContent = 'الإصدار ' + v + ' · ';
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>

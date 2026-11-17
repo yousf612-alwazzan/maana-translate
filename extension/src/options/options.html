@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>معنى — الإعدادات</title>
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="brand">
+        <span class="mark" aria-hidden="true">ع</span>
+        <div>
+          <h1>معنى</h1>
+          <p class="muted">ترجمة بالمعنى للصفحات والمانجا</p>
+        </div>
+      </div>
+      <span id="saved" class="saved" aria-live="polite"></span>
+    </header>
+
+    <section id="consentBox" class="consent-box" hidden>
+      <div class="head"><h2>قبل ما تبدأ</h2></div>
+      <p>عشان تترجم، الإضافة ترسل نص الصفحة أو الصورة اللي تطلب ترجمتها لمزود الذكاء الاصطناعي اللي تختاره إنت من القائمة تحت، وبمفتاحك. ما ينرسل شي لنا ولا لأي طرف ثاني، وما ينرسل شي إلا لما تطلب الترجمة أو تفعّل الترجمة التلقائية لموقع.</p>
+      <div class="inline">
+        <button id="consentBtn" class="btn primary" type="button">موافق</button>
+        <span class="muted small">تقدر تسحب موافقتك أي وقت من قسم الخصوصية تحت.</span>
+      </div>
+    </section>
+
+    <section>
+      <div class="head">
+        <h2>المزودين</h2>
+        <p class="muted">الإضافة تستخدم أول مزود شغّال بالترتيب، وإذا خلص حده تنتقل للي بعده. رتّبهم بالأسهم.</p>
+      </div>
+      <ol id="providers" class="providers"></ol>
+      <p class="muted small">المفاتيح تنحفظ على جهازك داخل المتصفح بس، وما تنرسل إلا للمزود نفسه.</p>
+    </section>
+
+    <section>
+      <div class="head">
+        <h2>اللغة والأسلوب</h2>
+        <p class="muted">الإضافة تترجم من أي لغة. هنا تختار اللغة اللي تترجم لها.</p>
+      </div>
+      <div class="field">
+        <label class="lab" for="target">ترجم إلى</label>
+        <div class="inline">
+          <select id="target"></select>
+          <input type="text" id="targetOther" placeholder="اكتب اسم اللغة، مثل: Swahili" hidden>
+        </div>
+      </div>
+      <div class="field" id="styleField">
+        <span class="lab">اللهجة</span>
+        <div class="choices">
+          <label class="check"><input type="radio" name="style" value="fusha"><span>فصحى مبسطة</span></label>
+          <label class="check"><input type="radio" name="style" value="kuwaiti"><span>كويتي</span></label>
+        </div>
+      </div>
+      <div class="field top-align">
+        <label class="lab" for="extra">تعليمات إضافية</label>
+        <div class="grow">
+          <textarea id="extra" rows="3" placeholder="مثال: خل أسماء الشخصيات بالإنجليزي، واستخدم ألفاظ بسيطة."></textarea>
+          <p class="muted small">اختياري. تنضاف لتعليمات المترجم في كل طلب.</p>
+        </div>
+      </div>
+      <div class="field">
+        <span class="lab">السرعة</span>
+        <label class="check"><input type="checkbox" id="lowThinking"><span>تفكير أقل عند النماذج اللي تدعمه (أسرع)</span></label>
+      </div>
+    </section>
+
+    <section>
+      <div class="head"><h2>المانجا والكوميك</h2></div>
+      <div class="field">
+        <label class="lab" for="minSize">أصغر صورة تنترجم</label>
+        <div class="inline"><input type="number" id="minSize" min="120" max="1200" step="20"><span class="muted">بكسل على الشاشة</span></div>
+      </div>
+      <div class="field">
+        <span class="lab">المؤثرات الصوتية</span>
+        <label class="check"><input type="checkbox" id="sfx"><span>اعرض ترجمتها بخط صغير جنبها</span></label>
+      </div>
+    </section>
+
+    <section>
+      <div class="head">
+        <h2>مواقع تنترجم تلقائيًا</h2>
+        <p class="muted">تضيفها من نافذة الإضافة وإنت داخل الموقع.</p>
+      </div>
+      <ul id="sites" class="sites"></ul>
+    </section>
+
+    <section>
+      <div class="head"><h2>الاختصارات والذاكرة</h2></div>
+      <div class="field">
+        <span class="lab">الاختصارات</span>
+        <div class="inline">
+          <span><kbd>Alt+T</kbd> للصفحة</span><span><kbd>Alt+M</kbd> للصور</span>
+          <button id="shortcuts" class="btn quiet" type="button">غيّر الاختصارات</button>
+        </div>
+      </div>
+      <div class="field">
+        <span class="lab">التحديثات</span>
+        <div class="inline">
+          <button id="checkUpdate" class="btn quiet" type="button">افحص التحديث</button>
+          <span id="updateMsg" class="muted" aria-live="polite"></span>
+          <a id="updateLink" class="btn" href="https://yousf612-alwazzan.github.io/maana-translate/" target="_blank" rel="noopener" hidden>افتح صفحة التحميل</a>
+        </div>
+      </div>
+      <div class="field">
+        <span class="lab">الترجمات المحفوظة</span>
+        <div class="inline">
+          <button id="clearCache" class="btn quiet" type="button">امسح المحفوظ</button>
+          <span id="cacheMsg" class="muted"></span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="head"><h2>الخصوصية</h2></div>
+      <ul class="plain">
+        <li>الإضافة ما تجمع أي بيانات عنك، وما عندها سيرفر ولا إحصائيات.</li>
+        <li>النص أو الصورة اللي تطلب ترجمتها تنرسل من متصفحك مباشرة للمزود اللي اخترته فوق، وبمفتاحك إنت. المزود يتعامل معها حسب شروطه هو.</li>
+        <li>ما ينرسل شي إلا لما تضغط زر الترجمة أو تفعّل الترجمة التلقائية لموقع.</li>
+        <li>المفاتيح والإعدادات والترجمات المحفوظة تبقى على جهازك داخل المتصفح.</li>
+        <li>للصفحات الحساسة استخدم مزود Ollama المحلي، لأن الباقات المجانية ممكن تستخدم النصوص لتحسين نماذجها.</li>
+        <li>زر «افحص التحديث» يسأل GitHub عن رقم آخر إصدار لما تضغطه بس، وما يرسل أي شي عنك.</li>
+      </ul>
+      <div class="inline" id="consentState">
+        <span id="consentText" class="muted"></span>
+        <button id="revokeBtn" class="btn quiet" type="button" hidden>اسحب الموافقة</button>
+        <a class="btn quiet" href="https://yousf612-alwazzan.github.io/maana-privacy/" target="_blank" rel="noopener">سياسة الخصوصية كاملة</a>
+      </div>
+    </section>
+
+    <footer class="muted small">الإصدار <span id="ver" class="ltr"></span></footer>
+  </div>
+
+  <template id="providerTpl">
+    <li class="prov">
+      <div class="prov-head">
+        <div class="arrows">
+          <button class="btn quiet sq up" type="button" title="قدّمه" aria-label="قدّمه بالترتيب">
+            <svg class="ic" viewBox="0 0 16 16"><path d="M3.5 10 8 5.5l4.5 4.5"/></svg>
+          </button>
+          <button class="btn quiet sq down" type="button" title="أخّره" aria-label="أخّره بالترتيب">
+            <svg class="ic" viewBox="0 0 16 16"><path d="M3.5 6 8 10.5 12.5 6"/></svg>
+          </button>
+        </div>
+        <label class="check name"><input type="checkbox" class="enabled"><span class="title"></span></label>
+        <span class="tier"></span>
+        <span class="state"></span>
+        <button class="btn quiet toggle" type="button" aria-expanded="false">التفاصيل</button>
+      </div>
+      <div class="prov-body" hidden>
+        <p class="muted hint"></p>
+        <div class="field url-row">
+          <label class="lab">رابط المزود</label>
+          <input type="url" class="baseUrl ltr grow" spellcheck="false" autocomplete="off">
+        </div>
+        <div class="field key-row">
+          <label class="lab">المفتاح</label>
+          <div class="inline grow">
+            <input type="password" class="apiKey ltr grow" spellcheck="false" autocomplete="off" placeholder="الصق المفتاح هنا">
+            <button class="btn quiet show" type="button">إظهار</button>
+            <a class="btn keyLink" target="_blank" rel="noopener">افتح صفحة المفتاح</a>
+          </div>
+        </div>
+        <div class="field">
+          <label class="lab">نموذج النص</label>
+          <div class="inline grow">
+            <input type="text" class="model ltr grow" spellcheck="false" autocomplete="off">
+            <button class="btn quiet fetch" type="button">جيب القائمة</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="lab">نموذج الصور</label>
+          <input type="text" class="visionModel ltr grow" spellcheck="false" autocomplete="off" placeholder="نفس نموذج النص">
+        </div>
+        <datalist class="models"></datalist>
+        <div class="ollama-note" hidden>
+          <p>Ollama يرفض الإضافات إلا إذا سمحت له. شغّل هالأمر مرة وحدة ثم أعد تشغيل Ollama:</p>
+          <code class="cmd">setx OLLAMA_ORIGINS "chrome-extension://*"</code>
+        </div>
+        <div class="field">
+          <span class="lab"></span>
+          <div class="inline grow">
+            <button class="btn test" type="button">اختبار</button>
+            <span class="result" aria-live="polite"></span>
+          </div>
+        </div>
+      </div>
+    </li>
+  </template>
+
+  <script type="module" src="options.js"></script>
+</body>
+</html>

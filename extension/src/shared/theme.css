@@ -1,0 +1,89 @@
+/* Shared look for the popup and the settings page: lacquer black, thin gold lines, square corners. */
+:root {
+  --bg: #0e0e0f;
+  --panel: #151516;
+  --raise: #1b1a18;
+  --line: #2c2a26;
+  --gold: #c8a55a;
+  --gold-hi: #e3c783;
+  --gold-dim: #7d6a3c;
+  --text: #ebe6da;
+  --muted: #9c968a;
+  --danger: #cf7663;
+  --ok: #8fb184;
+  --cut: 8px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 13px/1.6 "Segoe UI", Tahoma, "Noto Sans Arabic", sans-serif;
+}
+
+h1, h2, h3, p { margin: 0; }
+.muted { color: var(--muted); }
+.ok { color: var(--ok); }
+.bad { color: var(--danger); }
+[hidden] { display: none !important; }
+
+svg.ic {
+  width: 16px; height: 16px; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: square; stroke-linejoin: miter;
+}
+
+button, select, input, textarea { font: inherit; color: inherit; }
+
+/* Plain bordered button */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  min-height: 28px; padding: 2px 12px;
+  background: transparent; color: var(--gold);
+  border: 1px solid var(--gold-dim); border-radius: 0; cursor: pointer;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--raise); color: var(--gold-hi); border-color: var(--gold); }
+.btn:active { background: #23211c; }
+.btn:disabled { color: #5d594f; border-color: #33312c; cursor: default; background: transparent; }
+.btn.quiet { border-color: var(--line); color: var(--text); }
+.btn.quiet:hover { border-color: var(--gold-dim); color: var(--gold-hi); }
+.btn.sq { width: 28px; padding: 0; }
+
+:is(button, select, input, textarea, summary, a):focus-visible {
+  outline: 1px solid var(--gold-hi);
+  outline-offset: 2px;
+}
+
+input[type="text"], input[type="password"], input[type="number"], input[type="url"], select, textarea {
+  min-height: 28px; padding: 2px 8px;
+  background: #0a0a0b; color: var(--text);
+  border: 1px solid var(--line); border-radius: 0;
+}
+input:hover, select:hover, textarea:hover { border-color: #45413a; }
+input:focus, select:focus, textarea:focus { border-color: var(--gold-dim); outline: none; }
+input::placeholder, textarea::placeholder { color: #6a655b; }
+
+input[type="checkbox"], input[type="radio"] {
+  appearance: none; width: 14px; height: 14px; margin: 0; flex: none;
+  border: 1px solid var(--gold-dim); background: #0a0a0b; cursor: pointer;
+  display: inline-grid; place-content: center;
+}
+input[type="radio"] { transform: rotate(45deg) scale(.82); }
+input[type="checkbox"]::after, input[type="radio"]::after {
+  content: ""; width: 8px; height: 8px; background: var(--gold); transform: scale(0);
+}
+input[type="checkbox"]:checked::after, input[type="radio"]:checked::after { transform: scale(1); }
+
+label.check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+
+kbd {
+  font: 11px/1.5 Consolas, "Cascadia Mono", monospace;
+  color: var(--muted); border: 1px solid var(--line); padding: 0 5px; direction: ltr;
+}
+
+code, .ltr { direction: ltr; unicode-bidi: isolate; font-family: Consolas, "Cascadia Mono", monospace; font-size: 12px; }
+/* Arabic placeholders inside left-to-right code fields keep the readable UI font. */
+input.ltr::placeholder { font-family: "Segoe UI", Tahoma, sans-serif; font-size: 12.5px; direction: rtl; text-align: right; }
