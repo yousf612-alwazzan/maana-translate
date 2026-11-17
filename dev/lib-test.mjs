@@ -2,6 +2,7 @@
 import http from 'node:http';
 import { sseData, ndjsonLines } from '../extension/src/lib/sse.js';
 import { streamChat, listModels, ProviderError } from '../extension/src/lib/providers.js';
+import { OPENROUTER, randomToken, challengeFor, authUrl, isCallback } from '../extension/src/lib/connect.js';
 
 let pass = 0, fail = 0;
 async function test(name, fn) {
@@ -294,6 +295,28 @@ await test('ollama: error line throws', async () => {
 });
 await test('ollama: listModels', async () => {
   eq(await listModels(ol()), ['llama3', 'qwen:7b']);
+});
+
+// ---- connect.js (OpenRouter OAuth with PKCE) ----
+await test('pkce: RFC 7636 example challenge', async () => {
+  eq(await challengeFor('dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk'), 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM');
+});
+await test('pkce: verifier is 43 url-safe characters and differs each time', async () => {
+  const a = randomToken(32), b = randomToken(32);
+  ok(/^[A-Za-z0-9_-]{43}$/.test(a), a);
+  ok(a !== b, 'same token twice');
+});
+await test('connect: auth url carries every parameter', async () => {
+  const u = new URL(authUrl(OPENROUTER, { challenge: 'CH', state: 'ST' }));
+  eq([u.origin + u.pathname, u.searchParams.get('callback_url'), u.searchParams.get('code_challenge'),
+    u.searchParams.get('code_challenge_method'), u.searchParams.get('key_label'), u.searchParams.get('state')],
+  ['https://openrouter.ai/auth', OPENROUTER.callback, 'CH', 'S256', 'Maana', 'ST']);
+});
+await test('connect: callback match ignores query, rejects look-alikes', async () => {
+  ok(isCallback(OPENROUTER.callback + '?code=1&state=2', OPENROUTER.callback), 'own callback');
+  ok(!isCallback('https://yousf612-alwazzan.github.io/maana-translate/', OPENROUTER.callback), 'site home');
+  ok(!isCallback('https://evil.example/maana-translate/connect.html?code=1', OPENROUTER.callback), 'other host');
+  ok(!isCallback('not a url', OPENROUTER.callback), 'garbage');
 });
 
 server.close();

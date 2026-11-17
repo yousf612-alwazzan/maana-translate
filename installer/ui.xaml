@@ -413,7 +413,7 @@
             <StackPanel x:Name="p5" Visibility="Collapsed">
               <TextBlock Style="{StaticResource H}" Text="جاهزة"/>
               <TextBlock Style="{StaticResource P}" Text="إذا ظهرت بطاقة «معنى» في صفحة الإضافات فالتثبيت تم."/>
-              <TextBlock Style="{StaticResource P}" Text="صفحة الإعدادات تفتح لك تلقائيًا: اربط مفتاحك من Gemini أو غيره واضغط «اختبار»."/>
+              <TextBlock Style="{StaticResource P}" Text="صفحة الإعدادات تفتح لك تلقائيًا: اضغط «موافق» ثم «اربط حساب OpenRouter»، وسجّل دخول هناك واضغط موافق."/>
               <Border Style="{StaticResource Mock}" Margin="0,14,0,0" FlowDirection="RightToLeft">
                 <Border Style="{StaticResource MockIn}">
                   <StackPanel Orientation="Horizontal">

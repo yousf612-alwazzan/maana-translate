@@ -56,6 +56,11 @@ a.btn { text-decoration: none; }
 
 .consent-box { margin-top: 20px; padding: 16px 18px 18px; border: 1px solid var(--gold-dim); border-inline-start: 2px solid var(--gold); background: var(--panel); }
 .consent-box p { max-width: 640px; }
+.quick { padding: 14px 18px 16px; border: 1px solid var(--gold-dim); border-inline-start: 2px solid var(--gold); background: var(--panel); display: grid; gap: 8px; }
+.quick h3 { margin: 0; font-size: 14px; }
+.quick p { margin: 0; max-width: 640px; }
+.connect-msg { font-size: 12.5px; }
+.connect-msg:empty { display: none; }
 .btn.primary { background: var(--gold); border-color: var(--gold); color: #0e0e0f; font-weight: 600; min-width: 96px; }
 .btn.primary:hover { background: var(--gold-hi); border-color: var(--gold-hi); color: #0e0e0f; }
 

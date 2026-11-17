@@ -46,9 +46,9 @@
 **4. الإعداد الأول**
 
 1. صفحة الإعدادات تفتح تلقائياً بعد التثبيت. اضغط **موافق** على رسالة البداية.
-2. عند Google Gemini اضغط **افتح صفحة المفتاح** وأنشئ مفتاحاً بحساب Google.
-3. الصق المفتاح واضغط **اختبار** للتأكد أنه يعمل.
-4. تقدر تضيف مزوّدين آخرين (Groq، OpenRouter، Claude، OpenAI، أو Ollama على جهازك). عند بلوغ حد مزوّد تنتقل الإضافة للذي بعده تلقائياً.
+2. اضغط **اربط حساب OpenRouter**. يفتح موقع OpenRouter: سجّل دخول أو أنشئ حساباً واضغط موافق. ترجع لصفحة الإعدادات والمفتاح محفوظ تلقائياً.
+3. اضغط **التفاصيل** عند OpenRouter ثم **اختبار** للتأكد أنه يعمل. النماذج التي لا تحتاج رصيداً لها 50 طلباً في اليوم.
+4. تقدر تضيف مزوّدين آخرين بلصق مفتاحهم (Google Gemini، Groq، Claude، OpenAI، أو Ollama على جهازك). عند بلوغ حد مزوّد تنتقل الإضافة للذي بعده تلقائياً.
 
 ---
 
@@ -95,7 +95,7 @@ Maana is a browser extension (Chrome, Edge, Brave and other Chromium browsers) t
 
 1. Download and run [Maana-Setup.exe](https://github.com/yousf612-alwazzan/maana-translate/releases/latest/download/Maana-Setup.exe). Windows shows a warning because the file is unsigned: choose More info, then Run anyway.
 2. Follow its three steps in the browser: paste the address it copied for you, switch on Developer mode, press Load unpacked, paste the folder path and press Select Folder. If you see the folders `_locales`, `icons` and `src`, you are in the right place: do not open any of them, just press Select Folder.
-3. In the settings page, agree to the notice, add your API key and press the test button.
+3. In the settings page, agree to the notice, then press **Connect OpenRouter account** (اربط حساب OpenRouter), sign in on OpenRouter and approve: you come back with a key on your own account already in place (one-click OAuth with PKCE, no copying). Or paste a key from another provider such as Google Gemini.
 4. `Alt+T` translates the page, `Alt+M` translates comic images; the same shortcut restores the original.
 
 Chromium browsers do not let a program add an extension by itself, so those three steps are manual. A [ZIP](https://github.com/yousf612-alwazzan/maana-translate/releases/latest/download/maana-translate.zip) is available for loading the folder by hand.

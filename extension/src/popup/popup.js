@@ -98,7 +98,7 @@ async function init() {
     $('consent').hidden = true;
     await refresh();
   });
-  if (!hasProvider) showNotice('اربط مزود أول: حط مفتاحك من المزود اللي تختاره.', true);
+  if (!hasProvider) showNotice('اربط مزود أول. أسهل طريقة: زر «اربط حساب OpenRouter» في الإعدادات.', true);
 
   for (const [value, label] of Object.entries(STYLES)) $('style').appendChild(new Option(label, value));
   $('style').value = settings.style;

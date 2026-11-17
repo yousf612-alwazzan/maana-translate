@@ -5,6 +5,7 @@ import { PRESETS, mergeSettings, resolveProvider, isUsable, langInfo, batchHint 
 import { streamChat, listModels } from './lib/providers.js';
 import * as cache from './lib/cache.js';
 import { textSystemPrompt, textUserMessage, imageSystemPrompt, imageUserMessage } from './lib/prompts.js';
+import { OPENROUTER, CONNECT_TTL_MS, randomToken, challengeFor, authUrl, isCallback, exchangeCode } from './lib/connect.js';
 
 const CONTENT_FILES = ['src/content/base.js', 'src/content/page.js', 'src/content/manga.js'];
 
@@ -64,6 +65,11 @@ const RETRYABLE = new Set(['rate', 'server', 'network']);
 
 function friendly(e, p) {
   const name = p?.name || '';
+  // OpenRouter turns models away when the account's privacy settings exclude every
+  // provider that serves them, which happens most with the models that need no credit.
+  if (p?.id === 'openrouter' && /data policy|privacy/i.test(e?.message || '')) {
+    return 'OpenRouter رفض النموذج بسبب إعدادات الخصوصية في حسابك. افتح openrouter.ai/settings/privacy وشغّل السماح للنماذج اللي بدون رصيد، ثم جرّب مرة ثانية.';
+  }
   switch (e?.kind) {
     case 'noprovider':
       return 'ما في مزود مربوط. افتح الإعدادات وأضف مفتاح.';
@@ -461,7 +467,76 @@ async function testProvider(id, draft) {
   return out.replace(/\[\[\d+\]\]/g, '').trim();
 }
 
+// ---------- one-click OpenRouter connect ----------
+
+// The addresses can be pointed at a local mock by the tests (globalThis.maana.openrouter).
+const OR = { ...OPENROUTER };
+let connectBusy = false;
+
+async function startConnect(openerTabId) {
+  const verifier = randomToken(32);
+  const state = randomToken(16);
+  const challenge = await challengeFor(verifier);
+  // Saved before the tab opens: the callback can arrive at once, and the service
+  // worker may be restarted while the user is signing in.
+  await chrome.storage.session.set({
+    orPending: { verifier, state, at: Date.now(), callback: OR.callback, exchange: OR.exchange, openerTabId: openerTabId ?? null },
+  });
+  await chrome.storage.session.remove('orResult');
+  await chrome.tabs.create({ url: authUrl(OR, { challenge, state }) });
+  return { ok: true };
+}
+
+async function finishConnect(tabId, url) {
+  if (connectBusy) return;
+  connectBusy = true;
+  try {
+    const { orPending: p } = await chrome.storage.session.get('orPending');
+    if (!p || !isCallback(url, p.callback)) return;
+    await chrome.storage.session.remove('orPending'); // a code is good for one try only
+
+    const q = new URL(url).searchParams;
+    let result;
+    if (Date.now() - p.at > CONNECT_TTL_MS) result = { ok: false, reason: 'expired' };
+    else if (!q.get('code')) result = { ok: false, reason: 'denied' };
+    else if (q.get('state') !== p.state) result = { ok: false, reason: 'state' };
+    else {
+      try {
+        const key = await exchangeCode(p.exchange, q.get('code'), p.verifier);
+        const { settings: raw } = await chrome.storage.local.get('settings');
+        const s = mergeSettings(raw);
+        s.providers.openrouter = { ...s.providers.openrouter, apiKey: key, enabled: true };
+        await chrome.storage.local.set({ settings: s });
+        result = { ok: true };
+      } catch (e) {
+        const expired = /expired/i.test(e?.message || '');
+        result = { ok: false, reason: expired ? 'expired' : 'exchange', detail: String(e?.message || e).slice(0, 160) };
+      }
+    }
+    await chrome.storage.session.set({ orResult: { ...result, at: Date.now() } });
+
+    // Back to the settings page: the one the user pressed the button in, if it is still open.
+    const opener = p.openerTabId != null ? await chrome.tabs.get(p.openerTabId).catch(() => null) : null;
+    if (opener) {
+      await chrome.tabs.update(opener.id, { active: true });
+      await chrome.windows.update(opener.windowId, { focused: true }).catch(() => {});
+      await chrome.tabs.remove(tabId).catch(() => {});
+    } else {
+      await chrome.tabs.update(tabId, { url: chrome.runtime.getURL('src/options/options.html') });
+    }
+  } finally {
+    connectBusy = false;
+  }
+}
+
+chrome.tabs.onUpdated.addListener((tabId, info) => {
+  if (!info.url) return;
+  if (!isCallback(info.url, OR.callback) && !isCallback(info.url, OPENROUTER.callback)) return;
+  finishConnect(tabId, info.url);
+});
+
 const handlers = {
+  async connectOpenRouter(_msg, sender) { return startConnect(sender?.tab?.id); },
   async toggle(msg) { return toggle(msg.tabId, msg.mode); },
   async setMode(msg) { return setMode(msg.tabId, msg.mode, msg.on); },
   async state(msg) { return getState(msg.tabId); },
@@ -486,10 +561,10 @@ const handlers = {
   },
 };
 
-chrome.runtime.onMessage.addListener((msg, _sender, reply) => {
+chrome.runtime.onMessage.addListener((msg, sender, reply) => {
   const fn = handlers[msg?.cmd];
   if (!fn) return false;
-  fn(msg).then(
+  fn(msg, sender).then(
     (r) => reply(r ?? { ok: true }),
     (e) => reply({ error: String(e?.message || e) }),
   );
@@ -502,4 +577,4 @@ chrome.runtime.onInstalled.addListener((details) => {
 });
 
 // Used by the automated tests and handy from the service worker console.
-globalThis.maana = { setMode, getState, toggle, presets: PRESETS };
+globalThis.maana = { setMode, getState, toggle, presets: PRESETS, openrouter: OR };

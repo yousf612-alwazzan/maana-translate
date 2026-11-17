@@ -17,11 +17,13 @@ function isNewer(a, b) {
 
 let settings = null;
 let saveTimer = 0;
+let lastWritten = ''; // what this page saved last, to tell its own writes from others
 const open = new Set(); // provider ids whose details are expanded
 
 function save() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(async () => {
+    lastWritten = JSON.stringify(settings);
     await chrome.storage.local.set({ settings });
     const el = $('saved');
     el.textContent = 'انحفظ';
@@ -39,7 +41,43 @@ function describe(id) {
   return { text: 'جاهز', ok: true, usable: isUsable(p) };
 }
 
+// ---------- one-click OpenRouter connect ----------
+
+const CONNECT_TEXT = {
+  ok: 'انربط حسابك في OpenRouter والمفتاح انحفظ. جرّب الترجمة الحين.',
+  denied: 'ما تم الربط: الموافقة ما اكتملت في موقع OpenRouter. اضغط الزر مرة ثانية.',
+  state: 'ما تم الربط: الرد اللي وصل ما يطابق طلبك. اضغط الزر مرة ثانية.',
+  expired: 'انتهت مهلة الربط. اضغط الزر مرة ثانية وكمّل خلال دقايق.',
+  exchange: 'ما قدرت آخذ المفتاح من OpenRouter. اضغط الزر مرة ثانية.',
+};
+
+function showConnect(text, cls) {
+  const el = $('connectMsg');
+  el.textContent = text;
+  el.className = 'connect-msg ' + (cls || 'muted');
+}
+
+async function connectOpenRouter() {
+  showConnect('فتحت لك صفحة OpenRouter. سجّل دخول واضغط موافق، وبترجع هنا بروحك.');
+  const r = await ask({ cmd: 'connectOpenRouter' });
+  if (r?.error) showConnect(r.error, 'bad');
+}
+
+async function showConnectResult() {
+  const { orResult: r } = await chrome.storage.session.get('orResult');
+  if (!r) return;
+  await chrome.storage.session.remove('orResult');
+  const text = CONNECT_TEXT[r.ok ? 'ok' : r.reason] || CONNECT_TEXT.exchange;
+  showConnect(text + (r.detail ? ` (${r.detail})` : ''), r.ok ? 'ok' : 'bad');
+}
+
+// The short "connect" route is offered while no provider can translate yet.
+function paintQuick() {
+  $('quick').hidden = settings.order.some((id) => isUsable(resolveProvider(id, settings)));
+}
+
 function renderProviders() {
+  paintQuick();
   const list = $('providers');
   list.textContent = '';
   const tpl = $('providerTpl');
@@ -55,7 +93,10 @@ function renderProviders() {
       q('.state').textContent = d.text;
       q('.state').classList.toggle('ok', d.ok);
       li.classList.toggle('usable', d.usable);
+      q('.connect').hidden = id !== 'openrouter' || !!saved.apiKey;
+      paintQuick();
     };
+    q('.connect').addEventListener('click', connectOpenRouter);
 
     q('.title').textContent = preset.name;
     q('.tier').textContent = preset.free || id === 'custom' ? '' : 'يحتاج رصيد';
@@ -208,6 +249,11 @@ async function init() {
 
   renderProviders();
   renderSites();
+  $('quickConnect').addEventListener('click', connectOpenRouter);
+  await showConnectResult();
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'session' && changes.orResult?.newValue) showConnectResult();
+  });
 
   const paintConsent = () => {
     $('consentBox').hidden = settings.consent;
@@ -296,6 +342,12 @@ async function init() {
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'local' || !changes.settings) return;
     const next = mergeSettings(changes.settings.newValue);
+    // A key saved by the connect flow in the service worker (not this page's own save).
+    const own = JSON.stringify(changes.settings.newValue) === lastWritten;
+    if (!own && JSON.stringify(next.providers.openrouter) !== JSON.stringify(settings.providers.openrouter)) {
+      settings.providers.openrouter = next.providers.openrouter;
+      renderProviders();
+    }
     if (JSON.stringify(next.autoSites) !== JSON.stringify(settings.autoSites)) {
       settings.autoSites = next.autoSites;
       renderSites();

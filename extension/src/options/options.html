@@ -34,6 +34,15 @@
         <h2>المزودين</h2>
         <p class="muted">الإضافة تستخدم أول مزود شغّال بالترتيب، وإذا خلص حده تنتقل للي بعده. رتّبهم بالأسهم.</p>
       </div>
+      <p id="connectMsg" class="connect-msg" aria-live="polite"></p>
+      <div id="quick" class="quick" hidden>
+        <h3>أسهل طريقة تبدأ</h3>
+        <p>اربط حساب OpenRouter بضغطة: يفتح لك موقعهم، تسجّل دخول أو تسوي حساب، تضغط موافق، وترجع هنا والمفتاح محطوط بروحه بدون نسخ ولصق.</p>
+        <div class="inline">
+          <button id="quickConnect" class="btn primary" type="button">اربط حساب OpenRouter</button>
+          <span class="muted small">النماذج اللي بدون رصيد لها 50 طلب باليوم. المفتاح على حسابك إنت، وتقدر تلغيه من صفحة المفاتيح في OpenRouter.</span>
+        </div>
+      </div>
       <ol id="providers" class="providers"></ol>
       <p class="muted small">المفاتيح تنحفظ على جهازك داخل المتصفح بس، وما تنرسل إلا للمزود نفسه.</p>
     </section>
@@ -121,6 +130,7 @@
         <li>ما ينرسل شي إلا لما تضغط زر الترجمة أو تفعّل الترجمة التلقائية لموقع.</li>
         <li>المفاتيح والإعدادات والترجمات المحفوظة تبقى على جهازك داخل المتصفح.</li>
         <li>للصفحات الحساسة استخدم مزود Ollama المحلي، لأن بعض المزودين يستخدمون النصوص لتحسين نماذجهم.</li>
+        <li>زر «اربط حساب OpenRouter» يفتح موقع OpenRouter، والمفتاح اللي يرجع منه ينحفظ على جهازك بس. صفحة الرجوع على GitHub ما تحفظ شي وما ترسل شي.</li>
         <li>زر «افحص التحديث» يسأل GitHub عن رقم آخر إصدار لما تضغطه بس، وما يرسل أي شي عنك.</li>
       </ul>
       <div class="inline" id="consentState">
@@ -147,6 +157,7 @@
         <label class="check name"><input type="checkbox" class="enabled"><span class="title"></span></label>
         <span class="tier"></span>
         <span class="state"></span>
+        <button class="btn connect" type="button" hidden>اربط الحساب</button>
         <button class="btn quiet toggle" type="button" aria-expanded="false">التفاصيل</button>
       </div>
       <div class="prov-body" hidden>

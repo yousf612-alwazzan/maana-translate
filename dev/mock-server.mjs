@@ -1,6 +1,7 @@
 // Mock LLM + fixture server for the Maana harness. No dependencies.
 // Usage: node mock-server.mjs   |   import { start } from './mock-server.mjs'
 import http from 'node:http';
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -111,9 +112,53 @@ export function start({ portA = 8787, portB = 8788, portC = 8789 } = {}) {
     tick();
   }
 
+  // A stand-in for OpenRouter's sign-in page and key exchange (OAuth with PKCE).
+  // mode: ok = approve, deny = come back without a code, badstate = wrong state.
+  const or = { mode: 'ok', challenge: '', auth: null, exchanged: 0, rejected: 0, code: '' };
+  async function orRoute(u, req, res) {
+    if (u.pathname === '/mock-or/auth') {
+      or.auth = Object.fromEntries(u.searchParams);
+      or.challenge = u.searchParams.get('code_challenge') || '';
+      or.code = 'code-' + crypto.randomBytes(6).toString('hex');
+      const back = new URL(u.searchParams.get('callback_url'));
+      if (or.mode !== 'deny') back.searchParams.set('code', or.code);
+      if (or.mode !== 'deny') back.searchParams.set('state', or.mode === 'badstate' ? 'not-the-state' : u.searchParams.get('state'));
+      if (or.mode === 'hold') {
+        // Waits for a click, like the real sign-in page.
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        return res.end(`<!doctype html><title>sign in</title><a id="go" href="${back.toString().replace(/"/g, '&quot;')}">approve</a>`);
+      }
+      res.writeHead(302, { Location: back.toString() });
+      return res.end();
+    }
+    if (u.pathname === '/mock-or/callback') {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      return res.end('<!doctype html><title>callback</title><p>callback page</p>');
+    }
+    if (u.pathname === '/mock-or/keys' && req.method === 'POST') {
+      let b = {};
+      try { b = JSON.parse(await body(req)); } catch { }
+      const s256 = crypto.createHash('sha256').update(String(b.code_verifier || '')).digest('base64url');
+      if (b.code !== or.code || b.code_challenge_method !== 'S256' || s256 !== or.challenge) {
+        or.rejected++;
+        return json(res, 403, { error: { message: 'Invalid code or code_verifier', code: 403 } });
+      }
+      or.code = ''; // single use
+      or.exchanged++;
+      return json(res, 200, { key: 'sk-or-v1-mock-key-0001', user_id: 'mock-user' });
+    }
+    if (u.pathname === '/admin/or') {
+      if (u.searchParams.get('mode')) or.mode = u.searchParams.get('mode');
+      return json(res, 200, { mode: or.mode, auth: or.auth, exchanged: or.exchanged, rejected: or.rejected });
+    }
+    res.writeHead(404);
+    res.end('not found');
+  }
+
   const A = http.createServer(async (req, res) => {
     const u = new URL(req.url, 'http://x');
     if (req.method === 'OPTIONS') { res.writeHead(204, cors); return res.end(); }
+    if (u.pathname.startsWith('/mock-or/') || u.pathname === '/admin/or') return orRoute(u, req, res);
     if (u.pathname === '/favicon.ico') { res.writeHead(204); return res.end(); }
     if (u.pathname === '/v1/models') return json(res, 200, { data: [{ id: 'mock-text' }, { id: 'mock-vision' }] });
     if (u.pathname === '/v1/chat/completions' && req.method === 'POST') return chat(req, res);
