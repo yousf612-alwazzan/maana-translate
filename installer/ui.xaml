@@ -2,16 +2,35 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="معنى — التثبيت" Width="840" Height="580"
         WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
-        Background="#FBF8F0" Foreground="#141414" FlowDirection="RightToLeft"
+        Background="#17161B" Foreground="#EFE9DC" FlowDirection="RightToLeft"
         FontFamily="Segoe UI" FontSize="15" UseLayoutRounding="True" SnapsToDevicePixels="True"
         TextOptions.TextFormattingMode="Display">
   <Window.Resources>
-    <!-- Comic-page palette: paper, ink, one red, and the pale yellow of caption boxes. -->
+    <!-- A dark desk with paper panels on it, so the plain background is easy on the
+         eyes: ink for text on paper, one red, and the yellow of caption boxes. -->
     <SolidColorBrush x:Key="Ink" Color="#141414"/>
-    <SolidColorBrush x:Key="Paper" Color="#FBF8F0"/>
+    <SolidColorBrush x:Key="Light" Color="#EFE9DC"/>
+    <SolidColorBrush x:Key="Paper" Color="#EFE9DC"/>
+    <SolidColorBrush x:Key="Sheet" Color="#FAF6EC"/>
+    <SolidColorBrush x:Key="Deep" Color="#0F0E12"/>
+    <SolidColorBrush x:Key="Edge" Color="#08070A"/>
     <SolidColorBrush x:Key="Red" Color="#E23A2B"/>
-    <SolidColorBrush x:Key="Note" Color="#FFE58A"/>
-    <SolidColorBrush x:Key="Muted" Color="#8A857A"/>
+    <SolidColorBrush x:Key="Note" Color="#F2D76E"/>
+    <SolidColorBrush x:Key="Muted" Color="#8E8A80"/>
+
+    <!-- The same dots in a light tint, for the dark areas. -->
+    <DrawingBrush x:Key="ToneLight" TileMode="Tile" Viewport="0,0,8,8" ViewportUnits="Absolute" Viewbox="0,0,8,8" ViewboxUnits="Absolute">
+      <DrawingBrush.Drawing>
+        <DrawingGroup>
+          <GeometryDrawing Brush="Transparent">
+            <GeometryDrawing.Geometry><RectangleGeometry Rect="0,0,8,8"/></GeometryDrawing.Geometry>
+          </GeometryDrawing>
+          <GeometryDrawing Brush="#1CFFFFFF">
+            <GeometryDrawing.Geometry><EllipseGeometry Center="4,4" RadiusX="1.2" RadiusY="1.2"/></GeometryDrawing.Geometry>
+          </GeometryDrawing>
+        </DrawingGroup>
+      </DrawingBrush.Drawing>
+    </DrawingBrush>
 
     <!-- Screentone: the dot shading of printed comics. -->
     <DrawingBrush x:Key="Tone" TileMode="Tile" Viewport="0,0,8,8" ViewportUnits="Absolute" Viewbox="0,0,8,8" ViewboxUnits="Absolute">
@@ -27,9 +46,9 @@
       </DrawingBrush.Drawing>
     </DrawingBrush>
 
-    <!-- Main action: ink block on a hard red shadow that it sinks into when pressed. -->
+    <!-- Main action: paper block on a hard red shadow that it sinks into when pressed. -->
     <Style x:Key="BtnPrimary" TargetType="Button">
-      <Setter Property="Foreground" Value="#FFFFFF"/>
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
       <Setter Property="FontSize" Value="16"/>
       <Setter Property="FontWeight" Value="Bold"/>
       <Setter Property="Padding" Value="20,0"/>
@@ -41,7 +60,7 @@
           <ControlTemplate TargetType="Button">
             <Grid>
               <Border x:Name="sh" Background="{StaticResource Red}" Margin="6,6,-6,-6"/>
-              <Border x:Name="b" Background="{StaticResource Ink}" BorderBrush="{StaticResource Ink}" BorderThickness="3" Padding="{TemplateBinding Padding}">
+              <Border x:Name="b" Background="{StaticResource Sheet}" BorderBrush="{StaticResource Sheet}" BorderThickness="3" Padding="{TemplateBinding Padding}">
                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
               </Border>
             </Grid>
@@ -60,9 +79,10 @@
                 </Setter>
               </Trigger>
               <Trigger Property="IsEnabled" Value="False">
-                <Setter TargetName="b" Property="Background" Value="#B9B4A8"/>
-                <Setter TargetName="b" Property="BorderBrush" Value="#B9B4A8"/>
-                <Setter TargetName="sh" Property="Background" Value="#DFDACD"/>
+                <Setter TargetName="b" Property="Background" Value="#4A4850"/>
+                <Setter TargetName="b" Property="BorderBrush" Value="#4A4850"/>
+                <Setter TargetName="sh" Property="Background" Value="#2A2830"/>
+                <Setter Property="Foreground" Value="#8E8A80"/>
               </Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>
@@ -70,9 +90,9 @@
       </Setter>
     </Style>
 
-    <!-- Secondary action: white with an ink frame. -->
+    <!-- Secondary action: an outline on the dark surface. -->
     <Style x:Key="Btn" TargetType="Button">
-      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+      <Setter Property="Foreground" Value="{StaticResource Light}"/>
       <Setter Property="FontWeight" Value="SemiBold"/>
       <Setter Property="Padding" Value="16,0"/>
       <Setter Property="Height" Value="42"/>
@@ -81,18 +101,21 @@
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="Button">
-            <Border x:Name="b" Background="#FFFFFF" BorderBrush="{StaticResource Ink}" BorderThickness="3" Padding="{TemplateBinding Padding}">
+            <Border x:Name="b" Background="Transparent" BorderBrush="{StaticResource Light}" BorderThickness="3" Padding="{TemplateBinding Padding}">
               <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
                 <Setter TargetName="b" Property="Background" Value="{StaticResource Note}"/>
+                <Setter TargetName="b" Property="BorderBrush" Value="{StaticResource Note}"/>
+                <Setter Property="Foreground" Value="{StaticResource Ink}"/>
               </Trigger>
               <Trigger Property="IsKeyboardFocused" Value="True">
                 <Setter TargetName="b" Property="BorderBrush" Value="{StaticResource Red}"/>
               </Trigger>
               <Trigger Property="IsPressed" Value="True">
-                <Setter TargetName="b" Property="Background" Value="#F3D56A"/>
+                <Setter TargetName="b" Property="Background" Value="#DDBF55"/>
+                <Setter Property="Foreground" Value="{StaticResource Ink}"/>
               </Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>
@@ -132,9 +155,9 @@
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="RadioButton">
-            <Border x:Name="b" Background="#FFFFFF" BorderBrush="{StaticResource Ink}" BorderThickness="3" Padding="12,0" Height="42">
+            <Border x:Name="b" Background="{StaticResource Paper}" BorderBrush="{StaticResource Paper}" BorderThickness="3" Padding="12,0" Height="42">
               <DockPanel>
-                <Border DockPanel.Dock="Left" Width="18" Height="18" Margin="0,0,12,0" VerticalAlignment="Center" BorderBrush="{StaticResource Ink}" BorderThickness="3" Background="#FFFFFF">
+                <Border DockPanel.Dock="Left" Width="18" Height="18" Margin="0,0,12,0" VerticalAlignment="Center" BorderBrush="{StaticResource Ink}" BorderThickness="3" Background="{StaticResource Sheet}">
                   <Rectangle x:Name="dot" Fill="{StaticResource Red}" Visibility="Hidden"/>
                 </Border>
                 <ContentPresenter VerticalAlignment="Center"/>
@@ -176,6 +199,7 @@
       <Setter Property="HorizontalAlignment" Value="Left"/>
     </Style>
     <Style x:Key="CapText" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
       <Setter Property="TextWrapping" Value="Wrap"/>
       <Setter Property="FontSize" Value="13.5"/>
       <Setter Property="FontWeight" Value="SemiBold"/>
@@ -184,19 +208,21 @@
     <Style x:Key="Key" TargetType="Border">
       <Setter Property="BorderBrush" Value="{StaticResource Ink}"/>
       <Setter Property="BorderThickness" Value="2,2,2,4"/>
-      <Setter Property="Background" Value="#FFFFFF"/>
+      <Setter Property="Background" Value="{StaticResource Sheet}"/>
       <Setter Property="Padding" Value="8,0,8,1"/>
       <Setter Property="Margin" Value="5,0"/>
       <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
     <Style x:Key="KeyText" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
       <Setter Property="FontFamily" Value="Consolas"/>
       <Setter Property="FontSize" Value="13"/>
       <Setter Property="FontWeight" Value="Bold"/>
     </Style>
     <!-- A panel showing a piece of the browser, with screentone behind it. -->
     <Style x:Key="Mock" TargetType="Border">
-      <Setter Property="Background" Value="#FFFFFF"/>
+      <Setter Property="TextElement.Foreground" Value="{StaticResource Ink}"/>
+      <Setter Property="Background" Value="{StaticResource Paper}"/>
       <Setter Property="BorderBrush" Value="{StaticResource Ink}"/>
       <Setter Property="BorderThickness" Value="3"/>
       <Setter Property="Margin" Value="0,16,0,0"/>
@@ -208,7 +234,7 @@
     </Style>
   </Window.Resources>
 
-  <Border BorderBrush="{StaticResource Ink}" BorderThickness="4">
+  <Border BorderBrush="{StaticResource Edge}" BorderThickness="4">
     <Grid>
       <Grid.RowDefinitions>
         <RowDefinition Height="50"/>
@@ -217,7 +243,7 @@
       </Grid.RowDefinitions>
 
       <!-- title bar -->
-      <Border x:Name="titleBar" Grid.Row="0" Background="{StaticResource Ink}">
+      <Border x:Name="titleBar" Grid.Row="0" Background="{StaticResource Deep}">
         <DockPanel Margin="14,0,4,0">
           <Button x:Name="btnClose" DockPanel.Dock="Right" Style="{StaticResource TitleBtn}" ToolTip="إغلاق">
             <Path Data="M0,0 L11,11 M11,0 L0,11" Stroke="#FFFFFF" StrokeThickness="1.8"/>
@@ -240,8 +266,8 @@
         </Grid.ColumnDefinitions>
 
         <!-- steps -->
-        <Border Grid.Column="0" Background="#FFFFFF" BorderBrush="{StaticResource Ink}" BorderThickness="0,0,4,0">
-          <Border Background="{StaticResource Tone}">
+        <Border Grid.Column="0" Background="{StaticResource Deep}" BorderBrush="{StaticResource Edge}" BorderThickness="0,0,4,0">
+          <Border Background="{StaticResource ToneLight}">
             <StackPanel x:Name="rail" Margin="0,24,0,0"/>
           </Border>
         </Border>
@@ -273,7 +299,7 @@
               <Border Style="{StaticResource Cap}" Margin="0,14,0,0">
                 <TextBlock Style="{StaticResource CapText}" Text="لا تحذف هالمجلد ولا تنقله: المتصفح يقرأ الإضافة منه كل مرة يشتغل."/>
               </Border>
-              <TextBlock x:Name="copyError" Style="{StaticResource P}" Foreground="{StaticResource Red}" FontWeight="Bold" Visibility="Collapsed" Margin="0,12,0,0"/>
+              <TextBlock x:Name="copyError" Style="{StaticResource P}" Foreground="#F47A6C" FontWeight="Bold" Visibility="Collapsed" Margin="0,12,0,0"/>
             </StackPanel>
 
             <StackPanel x:Name="p2" Visibility="Collapsed">
@@ -291,11 +317,11 @@
               <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
                 <Button x:Name="btnOpenBrowser" Style="{StaticResource BtnPrimary}" Content="افتح المتصفح"/>
                 <Button x:Name="btnCopyUrl" Style="{StaticResource Btn}" Content="انسخ العنوان مرة ثانية" Margin="20,0,0,0"/>
-                <TextBlock x:Name="copied2" Text="انّسخ" Foreground="{StaticResource Red}" FontWeight="Bold" VerticalAlignment="Center" Margin="12,0,0,0" Visibility="Hidden"/>
+                <TextBlock x:Name="copied2" Text="انّسخ" Foreground="{StaticResource Note}" FontWeight="Bold" VerticalAlignment="Center" Margin="12,0,0,0" Visibility="Hidden"/>
               </StackPanel>
               <Border Style="{StaticResource Mock}" Margin="0,22,0,0">
                 <Border Style="{StaticResource MockIn}">
-                  <Border Background="#FFFFFF" BorderBrush="{StaticResource Ink}" BorderThickness="3" CornerRadius="17" Height="34" Padding="12,0">
+                  <Border Background="{StaticResource Sheet}" BorderBrush="{StaticResource Ink}" BorderThickness="3" CornerRadius="17" Height="34" Padding="12,0">
                     <DockPanel>
                       <Path DockPanel.Dock="Left" Data="M0,7 A7,7 0 1 1 14,7 A7,7 0 1 1 0,7 M7,3.5 L7,7.5 M7,9.5 L7,10.5" Stroke="{StaticResource Ink}" StrokeThickness="1.6" VerticalAlignment="Center" Margin="0,0,10,0"/>
                       <TextBlock x:Name="urlText" Text="chrome://extensions" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
@@ -314,7 +340,7 @@
               <Border Style="{StaticResource Mock}" Margin="0,22,0,0">
                 <Border Style="{StaticResource MockIn}">
                   <DockPanel>
-                    <Border DockPanel.Dock="Right" Background="#FFFFFF" BorderBrush="{StaticResource Red}" BorderThickness="4" Padding="12,7">
+                    <Border DockPanel.Dock="Right" Background="{StaticResource Sheet}" BorderBrush="{StaticResource Red}" BorderThickness="4" Padding="12,7">
                       <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Developer mode" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0"/>
                         <Grid Width="38" Height="20">
@@ -345,28 +371,28 @@
               </Border>
               <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
                 <Button x:Name="btnCopyPath" Style="{StaticResource Btn}" Content="انسخ المسار مرة ثانية"/>
-                <TextBlock x:Name="copied4" Text="انّسخ" Foreground="{StaticResource Red}" FontWeight="Bold" VerticalAlignment="Center" Margin="12,0,0,0" Visibility="Hidden"/>
+                <TextBlock x:Name="copied4" Text="انّسخ" Foreground="{StaticResource Note}" FontWeight="Bold" VerticalAlignment="Center" Margin="12,0,0,0" Visibility="Hidden"/>
               </StackPanel>
               <Border Style="{StaticResource Mock}" Margin="0,16,0,0">
                 <Border Style="{StaticResource MockIn}">
                   <StackPanel>
                     <StackPanel Orientation="Horizontal">
-                      <Border Background="#FFFFFF" BorderBrush="{StaticResource Red}" BorderThickness="4" Padding="12,5" Margin="0,0,8,0">
+                      <Border Background="{StaticResource Sheet}" BorderBrush="{StaticResource Red}" BorderThickness="4" Padding="12,5" Margin="0,0,8,0">
                         <TextBlock Text="Load unpacked" FontSize="13.5" FontWeight="Bold"/>
                       </Border>
-                      <Border Background="#FFFFFF" BorderBrush="{StaticResource Muted}" BorderThickness="2" Padding="12,7" Margin="0,0,8,0">
+                      <Border Background="{StaticResource Sheet}" BorderBrush="{StaticResource Muted}" BorderThickness="2" Padding="12,7" Margin="0,0,8,0">
                         <TextBlock Text="Pack extension" FontSize="13.5" Foreground="{StaticResource Muted}"/>
                       </Border>
-                      <Border Background="#FFFFFF" BorderBrush="{StaticResource Muted}" BorderThickness="2" Padding="12,7">
+                      <Border Background="{StaticResource Sheet}" BorderBrush="{StaticResource Muted}" BorderThickness="2" Padding="12,7">
                         <TextBlock Text="Update" FontSize="13.5" Foreground="{StaticResource Muted}"/>
                       </Border>
                     </StackPanel>
                     <DockPanel Margin="0,12,0,0">
-                      <Border DockPanel.Dock="Right" Background="#FFFFFF" BorderBrush="{StaticResource Red}" BorderThickness="4" Padding="12,4" Margin="8,0,0,0">
+                      <Border DockPanel.Dock="Right" Background="{StaticResource Sheet}" BorderBrush="{StaticResource Red}" BorderThickness="4" Padding="12,4" Margin="8,0,0,0">
                         <TextBlock Text="Select Folder" FontSize="13.5" FontWeight="Bold"/>
                       </Border>
                       <TextBlock DockPanel.Dock="Left" Text="Folder:" FontSize="13.5" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                      <Border Background="#FFFFFF" BorderBrush="{StaticResource Ink}" BorderThickness="2" Padding="8,5">
+                      <Border Background="{StaticResource Sheet}" BorderBrush="{StaticResource Ink}" BorderThickness="2" Padding="8,5">
                         <TextBlock x:Name="pathText4" FontFamily="Consolas" FontSize="12.5" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
                       </Border>
                     </DockPanel>
@@ -402,17 +428,17 @@
       </Grid>
 
       <!-- footer -->
-      <Border Grid.Row="2" Background="{StaticResource Paper}" BorderBrush="{StaticResource Ink}" BorderThickness="0,4,0,0">
+      <Border Grid.Row="2" Background="{StaticResource Deep}" BorderBrush="{StaticResource Edge}" BorderThickness="0,4,0,0">
         <DockPanel Margin="26,0,22,4">
           <Button x:Name="btnNext" DockPanel.Dock="Right" Style="{StaticResource BtnPrimary}" MinWidth="150" VerticalAlignment="Center">
             <StackPanel Orientation="Horizontal">
               <TextBlock x:Name="nextText" Text="ابدأ التثبيت" VerticalAlignment="Center"/>
-              <Path x:Name="nextArrow" Data="M0,0 L6,6 L0,12" Stroke="#FFFFFF" StrokeThickness="2.4" VerticalAlignment="Center" Margin="12,1,0,0"/>
+              <Path x:Name="nextArrow" Data="M0,0 L6,6 L0,12" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="2.4" VerticalAlignment="Center" Margin="12,1,0,0"/>
             </StackPanel>
           </Button>
           <Button x:Name="btnBack" DockPanel.Dock="Left" Style="{StaticResource Btn}" MinWidth="112" VerticalAlignment="Center">
             <StackPanel Orientation="Horizontal">
-              <Path Data="M6,0 L0,6 L6,12" Stroke="{StaticResource Ink}" StrokeThickness="2.2" VerticalAlignment="Center" Margin="0,1,10,0"/>
+              <Path Data="M6,0 L0,6 L6,12" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="2.2" VerticalAlignment="Center" Margin="0,1,10,0"/>
               <TextBlock Text="السابق" VerticalAlignment="Center"/>
             </StackPanel>
           </Button>

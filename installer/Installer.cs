@@ -23,8 +23,8 @@ using Microsoft.Win32;
 [assembly: AssemblyTitle("Maana Setup")]
 [assembly: AssemblyProduct("Maana")]
 [assembly: AssemblyDescription("Installs the Maana translation extension")]
-[assembly: AssemblyVersion("0.1.1.0")]
-[assembly: AssemblyFileVersion("0.1.1.0")]
+[assembly: AssemblyVersion("0.1.2.0")]
+[assembly: AssemblyFileVersion("0.1.2.0")]
 
 namespace MaanaSetup
 {
@@ -185,6 +185,7 @@ namespace MaanaSetup
         {
             rail.Children.Clear();
             Brush ink = (Brush)Window.FindResource("Ink");
+            Brush light = (Brush)Window.FindResource("Light");
             Brush red = (Brush)Window.FindResource("Red");
             Brush muted = (Brush)Window.FindResource("Muted");
             for (int k = 1; k <= Last; k++)
@@ -198,20 +199,20 @@ namespace MaanaSetup
                 row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(32) });
                 row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-                // A numbered square: red for the step in hand, ink once it is done.
+                // A numbered square: red for the step in hand, filled once it is done.
                 Border box = new Border();
                 box.Width = 32;
                 box.Height = 32;
                 box.BorderThickness = new Thickness(3);
-                box.BorderBrush = current ? red : ink;
-                box.Background = current ? red : done ? ink : Brushes.White;
+                box.BorderBrush = current ? red : done ? light : muted;
+                box.Background = current ? red : done ? light : Brushes.Transparent;
                 box.VerticalAlignment = VerticalAlignment.Center;
                 FrameworkElement mark;
                 if (done)
                 {
                     System.Windows.Shapes.Path check = new System.Windows.Shapes.Path();
                     check.Data = Geometry.Parse("M0,5 L4,9 L11,0");
-                    check.Stroke = Brushes.White;
+                    check.Stroke = ink;
                     check.StrokeThickness = 2.4;
                     check.FlowDirection = FlowDirection.LeftToRight;
                     mark = check;
@@ -222,7 +223,7 @@ namespace MaanaSetup
                     num.Text = Digits[k - 1];
                     num.FontSize = 16;
                     num.FontWeight = FontWeights.Bold;
-                    num.Foreground = current ? Brushes.White : ink;
+                    num.Foreground = current ? Brushes.White : muted;
                     mark = num;
                 }
                 mark.HorizontalAlignment = HorizontalAlignment.Center;
@@ -235,7 +236,7 @@ namespace MaanaSetup
                 label.Text = StepNames[k - 1];
                 label.Margin = new Thickness(12, 0, 0, 0);
                 label.VerticalAlignment = VerticalAlignment.Center;
-                label.Foreground = current || done ? ink : muted;
+                label.Foreground = current || done ? light : muted;
                 label.FontWeight = current ? FontWeights.Bold : FontWeights.SemiBold;
                 Grid.SetColumn(label, 2);
                 row.Children.Add(label);
@@ -263,7 +264,7 @@ namespace MaanaSetup
             }
             System.Windows.Shapes.Path lines = new System.Windows.Shapes.Path();
             lines.Data = g;
-            lines.Fill = new SolidColorBrush(Color.FromArgb(15, 20, 20, 20));
+            lines.Fill = new SolidColorBrush(Color.FromArgb(9, 255, 255, 255));
             fx.Children.Add(lines);
         }
 

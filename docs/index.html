@@ -11,27 +11,30 @@
 <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --paper: #fbf8f0; --ink: #141414; --red: #e23a2b; --note: #ffe58a; --tone: rgba(20, 20, 20, .16);
+    --bg: #17161b; --light: #efe9dc; --dim: #b9b3a6;
+    --paper: #efe9dc; --sheet: #faf6ec; --ink: #141414; --red: #e23a2b; --note: #f2d76e; --tone: rgba(20, 20, 20, .16);
     --display: "Lalezar", "Tajawal", Tahoma, sans-serif;
     --body: "Tajawal", "Segoe UI", Tahoma, sans-serif;
-    color-scheme: light;
+    color-scheme: dark;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  body { margin: 0; background: var(--paper); color: var(--ink); font: 500 17px/1.75 var(--body); }
-  a { color: var(--ink); }
+  /* a dark desk with paper sheets on it: the plain background stays easy on the eyes */
+  body { margin: 0; background: var(--bg); color: var(--light); font: 500 17px/1.75 var(--body); }
+  a { color: inherit; }
   img { display: block; max-width: 100%; height: auto; }
   .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
   .ltr { direction: ltr; unicode-bidi: isolate; }
-  kbd { direction: ltr; unicode-bidi: isolate; white-space: nowrap; display: inline-block; margin: 0 4px; font: 700 .82em/1.6 Consolas, "Cascadia Mono", monospace; border: 2px solid var(--ink); background: #fff; padding: 0 7px; box-shadow: -2px 2px 0 var(--ink); }
+  kbd { direction: ltr; unicode-bidi: isolate; white-space: nowrap; display: inline-block; margin: 0 4px; font: 700 .82em/1.6 Consolas, "Cascadia Mono", monospace; border: 2px solid var(--ink); background: var(--sheet); color: var(--ink); padding: 0 7px; box-shadow: -2px 2px 0 var(--ink); }
 
   /* screentone: the dot shading of printed manga */
   .tone, .panel.tone { background-image: radial-gradient(circle, var(--tone) 1.3px, transparent 1.5px); background-size: 8px 8px; }
   .tone-dark, .panel.tone-dark { background-color: var(--ink); background-image: radial-gradient(circle, rgba(255, 255, 255, .2) 1.2px, transparent 1.4px); background-size: 8px 8px; color: #fff; }
 
   /* a panel: thick ink frame, like one frame of a page */
-  .panel { position: relative; background: #fff; border: 4px solid var(--ink); }
-  .cap { display: inline-block; background: var(--note); border: 3px solid var(--ink); padding: 2px 14px; font-weight: 700; font-size: 15px; line-height: 1.7; }
+  .panel { position: relative; background: var(--paper); color: var(--ink); border: 4px solid var(--ink); }
+  .panel.tone-dark { border-color: #3a3840; }
+  .cap { display: inline-block; background: var(--note); color: var(--ink); border: 3px solid var(--ink); padding: 2px 14px; font-weight: 700; font-size: 15px; line-height: 1.7; }
 
   header.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 70px; }
   .brand { display: flex; align-items: center; gap: 12px; font: 400 30px/1 var(--display); }
@@ -39,7 +42,7 @@
     clip-path: polygon(0 0, calc(100% - 11px) 0, 100% 11px, 100% 100%, 0 100%); }
   nav.links { display: flex; gap: 6px; font-weight: 700; font-size: 16px; }
   nav.links a { text-decoration: none; padding: 2px 12px; border: 3px solid transparent; }
-  nav.links a:hover, nav.links a:focus-visible { border-color: var(--ink); background: var(--note); outline: none; }
+  nav.links a:hover, nav.links a:focus-visible { border-color: var(--note); background: var(--note); color: var(--ink); outline: none; }
 
   /* ---------- opening page ---------- */
   .hero { overflow: hidden; padding: 44px 44px 40px;
@@ -60,31 +63,25 @@
   .meta { margin: 22px 0 0; font-size: 15px; font-weight: 700; }
 
   /* speech bubbles drawn with plain boxes: an ink tail under a white one */
-  .bubble { position: relative; background: #fff; border: 4px solid var(--ink); border-radius: 46% / 50%; padding: 22px 30px; text-align: center; font-weight: 700; line-height: 1.5; }
+  .bubble { position: relative; background: var(--sheet); border: 4px solid var(--ink); border-radius: 46% / 50%; padding: 22px 30px; text-align: center; font-weight: 700; line-height: 1.5; }
   .bubble::before, .bubble::after { content: ""; position: absolute; clip-path: polygon(0 0, 100% 0, 18% 100%); }
   .bubble::before { bottom: -30px; inset-inline-start: 24%; width: 36px; height: 32px; background: var(--ink); }
-  .bubble::after { bottom: -19px; inset-inline-start: calc(24% + 5.5px); width: 25px; height: 23px; background: #fff; }
+  .bubble::after { bottom: -19px; inset-inline-start: calc(24% + 5.5px); width: 25px; height: 23px; background: var(--sheet); }
   .bubble.flip::before, .bubble.flip::after { transform: scaleX(-1); }
-  /* the example: one line, shown three ways, each with a plain label */
-  .demo { display: grid; gap: 30px; padding: 4px 0 22px; }
-  .demo .row { display: grid; grid-template-columns: 132px 1fr; align-items: center; gap: 16px; }
-  .demo .tag { display: flex; align-items: center; justify-content: space-between; gap: 8px; border: 3px solid var(--ink); background: var(--note); padding: 4px 10px; font-weight: 700; font-size: 15px; line-height: 1.5; }
-  .demo .tag svg { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 3.4; stroke-linecap: square; }
-  .demo .bad .tag { background: #fff; color: var(--red); border-color: var(--red); }
-  .demo .good .tag { background: var(--red); color: #fff; }
-  .demo .bubble { padding: 16px 22px; }
-  .demo .bubble.src { font: 700 20px/1.4 "Comic Sans MS", "Segoe UI", sans-serif; direction: ltr; }
-  .demo .bubble.lit { border-style: dashed; border-color: #9a958a; color: #5f5a51; font-size: 19px; }
-  .demo .bubble.lit::before, .demo .bubble.lit::after { display: none; }
-  .demo .bubble.out { font: 400 34px/1.25 var(--display); box-shadow: -7px 7px 0 var(--red); }
-  @media (max-width: 520px) { .demo .row { grid-template-columns: 1fr; gap: 8px; } .demo .tag { justify-self: start; } }
+  /* the example: what was said, the word-for-word mistake, and what it means */
+  .demo { position: relative; display: grid; gap: 34px; padding: 6px 0 26px; }
+  .demo .bubble.src { justify-self: start; width: 78%; font: 700 24px/1.4 "Comic Sans MS", "Segoe UI", sans-serif; direction: ltr; }
+  .demo .bubble.out { justify-self: end; width: 78%; font: 400 38px/1.3 var(--display); }
+  .demo .wrong { justify-self: center; display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 23px; }
+  .demo .wrong s { text-decoration-thickness: 2px; text-decoration-color: var(--red); }
+  .demo .wrong .x { width: 30px; height: 30px; flex: none; background: var(--red); clip-path: polygon(20% 0, 50% 30%, 80% 0, 100% 20%, 70% 50%, 100% 80%, 80% 100%, 50% 70%, 20% 100%, 0 80%, 30% 50%, 0 20%); }
 
   /* ---------- chapters ---------- */
   section { padding: 54px 0 8px; }
   .chapter { display: flex; align-items: baseline; gap: 16px; margin: 0 0 20px; }
-  .chapter .no { font: 400 20px/1 var(--display); background: var(--ink); color: #fff; padding: 9px 14px 5px; transform: skew(-8deg); }
+  .chapter .no { font: 400 20px/1 var(--display); background: var(--red); color: #fff; padding: 9px 14px 5px; transform: skew(-8deg); }
   h2 { font: 400 46px/1.15 var(--display); margin: 0; }
-  .sub { margin: -8px 0 22px; max-width: 44em; }
+  .sub { margin: -8px 0 22px; max-width: 44em; color: var(--dim); }
 
   .page { display: grid; gap: 16px; }
   .two { grid-template-columns: 1fr 1fr; }
@@ -123,9 +120,9 @@
   .en h2 { font: 700 26px/1.2 "Segoe UI", sans-serif; margin-bottom: 8px; }
   .en ol { padding-left: 22px; margin: 8px 0 12px; }
 
-  footer { margin-top: 60px; background: var(--ink); color: #fff; padding: 22px 0 30px; font-size: 15px; }
+  footer { margin-top: 60px; background: #0f0e12; color: var(--dim); border-top: 4px solid #000; padding: 22px 0 30px; font-size: 15px; }
   footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
-  footer a { color: #fff; }
+  footer a { color: var(--light); }
 
   @media (max-width: 900px) {
     .hero { padding: 30px 22px; }
@@ -176,19 +173,10 @@
         </div>
         <p class="meta"><span id="ver"></span>ويندوز 10 و 11 · Chrome و Edge و Brave</p>
       </div>
-      <div class="demo" aria-label="مثال: جملة إنجليزية، ترجمتها الحرفية، ثم ترجمتها بالمعنى">
-        <div class="row">
-          <span class="tag">النص الأصلي</span>
-          <div class="bubble src">It's a piece of cake!</div>
-        </div>
-        <div class="row bad">
-          <span class="tag">ترجمة حرفية <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15"/></svg></span>
-          <div class="bubble lit">إنها قطعة من الكعك!</div>
-        </div>
-        <div class="row good">
-          <span class="tag">ترجمة معنى <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2.5 9.5l4.5 4.5 8.5-10"/></svg></span>
-          <div class="bubble out flip">سهلة مرة!</div>
-        </div>
+      <div class="demo" aria-label="مثال: جملة إنجليزية معناها مستحيل، مو لا طريق">
+        <div class="bubble src">No way!</div>
+        <div class="wrong"><span class="x" aria-hidden="true"></span><span>مو <s>«لا طريق!»</s></span></div>
+        <div class="bubble out flip">مستحيل!</div>
       </div>
     </div>
   </div>
