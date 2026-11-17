@@ -105,9 +105,15 @@ export const PRESETS = {
 
 export const DEFAULT_ORDER = ['gemini', 'groq', 'openrouter', 'ollama', 'anthropic', 'openai', 'custom'];
 
+// Arabic registers the user can pick (used only when translating into Arabic).
+// Each one has a matching description for the model in prompts.js.
 export const STYLES = {
   fusha: 'فصحى مبسطة',
   kuwaiti: 'كويتي',
+  saudi: 'سعودي عام',
+  najdi: 'سعودي نجدي',
+  hijazi: 'سعودي حجازي',
+  janoubi: 'سعودي جنوبي',
 };
 
 // Languages the user can translate INTO. The source can be any language.

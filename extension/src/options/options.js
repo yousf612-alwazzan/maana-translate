@@ -1,4 +1,4 @@
-import { PRESETS, LANGS, mergeSettings, resolveProvider, isUsable, isSecureUrl } from '../lib/presets.js';
+import { PRESETS, LANGS, STYLES, mergeSettings, resolveProvider, isUsable, isSecureUrl } from '../lib/presets.js';
 
 const $ = (id) => document.getElementById(id);
 const ask = (msg) => chrome.runtime.sendMessage(msg).catch((e) => ({ error: String(e?.message || e) }));
@@ -239,13 +239,11 @@ async function init() {
   $('targetOther').addEventListener('input', () => { settings.targetOther = $('targetOther').value; save(); });
   paintLang();
 
-  for (const radio of document.querySelectorAll('input[name="style"]')) {
-    radio.checked = radio.value === settings.style;
-    radio.addEventListener('change', () => {
-      if (radio.checked) settings.style = radio.value;
-      save();
-    });
-  }
+  // Arabic register: simple standard Arabic or one of the dialects.
+  const style = $('style');
+  for (const [value, label] of Object.entries(STYLES)) style.appendChild(new Option(label, value));
+  style.value = settings.style;
+  style.addEventListener('change', () => { settings.style = style.value; save(); });
   $('extra').value = settings.extra;
   $('extra').addEventListener('input', () => { settings.extra = $('extra').value; save(); });
   $('lowThinking').checked = settings.lowThinking;

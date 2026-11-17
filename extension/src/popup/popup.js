@@ -1,4 +1,4 @@
-import { mergeSettings, LANGS } from '../lib/presets.js';
+import { mergeSettings, LANGS, STYLES } from '../lib/presets.js';
 
 const $ = (id) => document.getElementById(id);
 const ask = (msg) => chrome.runtime.sendMessage(msg).catch((e) => ({ error: String(e?.message || e) }));
@@ -100,6 +100,7 @@ async function init() {
   });
   if (!hasProvider) showNotice('اربط مزود أول: حط مفتاحك من المزود اللي تختاره.', true);
 
+  for (const [value, label] of Object.entries(STYLES)) $('style').appendChild(new Option(label, value));
   $('style').value = settings.style;
 
   // Target language: the list, plus a typed language when the user set one in the settings.

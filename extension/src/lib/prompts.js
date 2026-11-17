@@ -7,6 +7,14 @@ const ARABIC_REGISTER = {
     'Write in Modern Standard Arabic that reads naturally and simply: the clear register of a well-edited Arabic magazine or a modern novel, never stiff, archaic or word-for-word.',
   kuwaiti:
     'Write in Kuwaiti / Gulf colloquial Arabic the way people naturally write it (clear "white" Gulf dialect that any Gulf reader follows). Dialogue and casual text are colloquial; formal or technical passages may lean toward simple Standard Arabic so they stay readable.',
+  saudi:
+    'Write in everyday Saudi colloquial Arabic: the common urban "white" Saudi dialect that people across the Kingdom use with each other online, not tied to one region. Dialogue and casual text are colloquial; formal or technical passages may lean toward simple Standard Arabic so they stay readable.',
+  najdi:
+    'Write in the Najdi Saudi dialect of central Arabia (Riyadh, Qassim), the way people from Najd naturally text each other, with its own everyday words and turns of phrase (for example وش, وشلون, أبي, الحين, كذا, زين) used where they fit and never forced. Dialogue and casual text are in dialect; formal or technical passages may lean toward simple Standard Arabic so they stay readable.',
+  hijazi:
+    'Write in the Hijazi Saudi dialect of the western region (Jeddah, Mecca, Medina), the way people from the Hijaz naturally text each other, with its own everyday words and turns of phrase (for example إيش, ليش, دحين, كدا, أبغى) used where they fit and never forced. Dialogue and casual text are in dialect; formal or technical passages may lean toward simple Standard Arabic so they stay readable.',
+  janoubi:
+    'Write in the southern Saudi dialect (Asir, Abha, Jazan area), the way people from the south of the Kingdom naturally speak and text, using its everyday words and turns of phrase where you are sure of them and plain Saudi colloquial otherwise, so it reads as genuine rather than imitated. Dialogue and casual text are in dialect; formal or technical passages may lean toward simple Standard Arabic so they stay readable.',
 };
 
 function register(lang, style) {
