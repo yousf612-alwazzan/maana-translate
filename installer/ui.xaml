@@ -326,7 +326,7 @@
           <StackPanel x:Name="p5" Visibility="Collapsed">
             <TextBlock Style="{StaticResource H}" Text="جاهزة"/>
             <TextBlock Style="{StaticResource P}" Text="إذا ظهرت بطاقة «معنى» في صفحة الإضافات فالتثبيت تم."/>
-            <TextBlock Style="{StaticResource P}" Text="صفحة الإعدادات تفتح لك تلقائيًا: اربط مفتاح Gemini المجاني واضغط «اختبار»."/>
+            <TextBlock Style="{StaticResource P}" Text="صفحة الإعدادات تفتح لك تلقائيًا: اربط مفتاحك من Gemini أو غيره واضغط «اختبار»."/>
             <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
               <Border Style="{StaticResource Key}" FlowDirection="LeftToRight" Margin="0,0,6,0"><TextBlock Text="Alt + T" FontSize="12"/></Border>
               <TextBlock Text="ترجمة الصفحة" VerticalAlignment="Center" Margin="0,0,22,0"/>

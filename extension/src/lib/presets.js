@@ -14,7 +14,7 @@ export const PRESETS = {
     reasoning: () => 'minimal',
     boxStyle: 'yxyx',
     concurrency: 3,
-    hint: 'مجاني بحدود يومية. المفتاح من Google AI Studio بحساب Google.',
+    hint: 'المفتاح من Google AI Studio بحساب Google، وله حد استخدام يومي.',
   },
   groq: {
     name: 'Groq',
@@ -28,7 +28,7 @@ export const PRESETS = {
     reasoning: (model) => (/qwen/i.test(model) ? 'none' : /gpt-oss/i.test(model) ? 'low' : ''),
     boxStyle: 'xyxy',
     concurrency: 1,
-    hint: 'مجاني وسريع جدًا، نماذج مفتوحة. حدوده بالدقيقة صغيرة.',
+    hint: 'سريع جدًا، نماذج مفتوحة، وحدوده بالدقيقة صغيرة.',
   },
   openrouter: {
     name: 'OpenRouter',
@@ -42,7 +42,7 @@ export const PRESETS = {
     reasoning: () => '',
     boxStyle: 'xyxy',
     concurrency: 2,
-    hint: 'مفتاح واحد لعدة نماذج. المجانية تنتهي بـ ‎:free وحدها 50 طلب باليوم.',
+    hint: 'مفتاح واحد لعدة نماذج. النماذج اللي بدون رصيد ينتهي اسمها بـ ‎:free وحدها 50 طلب باليوم.',
   },
   ollama: {
     name: 'Ollama المحلي',
@@ -71,7 +71,7 @@ export const PRESETS = {
     reasoning: () => '',
     boxStyle: 'xyxy',
     concurrency: 3,
-    hint: 'مدفوع برصيد API منفصل عن اشتراك تطبيق Claude.',
+    hint: 'يحتاج رصيد API، وهو منفصل عن اشتراك تطبيق Claude.',
   },
   openai: {
     name: 'OpenAI',
@@ -85,7 +85,7 @@ export const PRESETS = {
     reasoning: () => '',
     boxStyle: 'xyxy',
     concurrency: 3,
-    hint: 'مدفوع برصيد API منفصل عن اشتراك ChatGPT.',
+    hint: 'يحتاج رصيد API، وهو منفصل عن اشتراك ChatGPT.',
   },
   custom: {
     name: 'مزود مخصص',

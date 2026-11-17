@@ -58,7 +58,7 @@ function renderProviders() {
     };
 
     q('.title').textContent = preset.name;
-    q('.tier').textContent = preset.free ? 'مجاني' : id === 'custom' ? '' : 'مدفوع';
+    q('.tier').textContent = preset.free || id === 'custom' ? '' : 'يحتاج رصيد';
     q('.hint').textContent = preset.hint;
     q('.enabled').checked = !!saved.enabled;
     q('.up').disabled = index === 0;

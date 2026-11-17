@@ -98,7 +98,7 @@ async function init() {
     $('consent').hidden = true;
     await refresh();
   });
-  if (!hasProvider) showNotice('اربط مزود أول: حط مفتاحك من مزود مجاني أو غيره.', true);
+  if (!hasProvider) showNotice('اربط مزود أول: حط مفتاحك من المزود اللي تختاره.', true);
 
   $('style').value = settings.style;
 

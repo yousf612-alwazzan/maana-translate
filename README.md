@@ -45,7 +45,7 @@
 **4. الإعداد الأول**
 
 1. صفحة الإعدادات تفتح تلقائياً بعد التثبيت. اضغط **موافق** على رسالة البداية.
-2. عند Google Gemini اضغط **افتح صفحة المفتاح** وأنشئ مفتاحاً مجانياً بحساب Google.
+2. عند Google Gemini اضغط **افتح صفحة المفتاح** وأنشئ مفتاحاً بحساب Google.
 3. الصق المفتاح واضغط **اختبار** للتأكد أنه يعمل.
 4. تقدر تضيف مزوّدين آخرين (Groq، OpenRouter، Claude، OpenAI، أو Ollama على جهازك). عند بلوغ حد مزوّد تنتقل الإضافة للذي بعده تلقائياً.
 
@@ -72,7 +72,7 @@
 1. الإضافة لا تجمع أي بيانات، وليس لها خادم ولا إحصائيات.
 2. النص أو الصورة التي تطلب ترجمتها تُرسل من متصفحك مباشرة إلى المزوّد الذي اخترته، وبعد موافقتك.
 3. المفاتيح والإعدادات تبقى على جهازك.
-4. الباقات المجانية قد تستخدم النصوص لتحسين نماذجها، فاستخدم Ollama المحلي للصفحات الحساسة.
+4. بعض المزوّدين قد يستخدمون النصوص لتحسين نماذجهم، فاستخدم Ollama المحلي للصفحات الحساسة.
 5. [سياسة الخصوصية كاملة](https://yousf612-alwazzan.github.io/maana-privacy/).
 
 ---
@@ -88,7 +88,7 @@
 
 ## English
 
-Maana is a browser extension (Chrome, Edge, Brave and other Chromium browsers) that writes the translation inside manga and comic speech bubbles and translates web pages in place, by meaning rather than word for word. It translates from any language into Arabic or any other language you pick (30+ in the list, or type a language name). It uses your own API key from the AI provider you choose: Google Gemini (free tier), Groq, OpenRouter, Claude, OpenAI, or a local model through Ollama. The interface is in Arabic.
+Maana is a browser extension (Chrome, Edge, Brave and other Chromium browsers) that writes the translation inside manga and comic speech bubbles and translates web pages in place, by meaning rather than word for word. It translates from any language into Arabic or any other language you pick (30+ in the list, or type a language name). It uses your own API key from the AI provider you choose: Google Gemini, Groq, OpenRouter, Claude, OpenAI, or a local model through Ollama. The interface is in Arabic.
 
 **Install**
 
