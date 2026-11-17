@@ -19,6 +19,8 @@
     };
   };
   M.setLang({ code: 'ar', key: 'ar', dir: 'rtl', own: ARABIC });
+  // How to cut the page into requests; the service worker sends the real values.
+  M.hint = { first: 1500, next: 3600, parallel: 3 };
 
   // ---------- port to the service worker ----------
 
@@ -210,6 +212,7 @@
   chrome.runtime.onMessage.addListener((msg, _sender, reply) => {
     if (msg?.cmd === 'set') {
       M.setLang(msg.lang);
+      if (msg.hint) M.hint = msg.hint;
       M.ui.clearError();
       M.modes[msg.mode]?.set(!!msg.on);
       reply({ ok: true });

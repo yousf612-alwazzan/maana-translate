@@ -234,9 +234,21 @@ export function resolveProvider(id, settings, draft) {
     visionModel,
     boxStyle: preset.boxStyle,
     concurrency: preset.concurrency,
+    minGapMs: preset.minGapMs || 0,
+    batch: preset.batch || null,
     numCtx: preset.numCtx,
     reasoningFor: preset.reasoning,
   };
+}
+
+// How the page should cut its text into requests for the provider that will be
+// tried first: services with tight request limits want fewer, larger batches.
+export function batchHint(settings) {
+  for (const id of settings.order) {
+    const p = resolveProvider(id, settings);
+    if (isUsable(p)) return p.batch || { first: 1500, next: 3600, parallel: 3 };
+  }
+  return { first: 1500, next: 3600, parallel: 3 };
 }
 
 export function isUsable(p) {

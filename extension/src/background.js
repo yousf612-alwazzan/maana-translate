@@ -1,7 +1,7 @@
 // Service worker: talks to the LLM providers, caches results, falls back between
 // providers, and injects the content scripts on demand.
 
-import { PRESETS, mergeSettings, resolveProvider, isUsable, langInfo } from './lib/presets.js';
+import { PRESETS, mergeSettings, resolveProvider, isUsable, langInfo, batchHint } from './lib/presets.js';
 import { streamChat, listModels } from './lib/providers.js';
 import * as cache from './lib/cache.js';
 import { textSystemPrompt, textUserMessage, imageSystemPrompt, imageUserMessage } from './lib/prompts.js';
@@ -44,10 +44,14 @@ function candidates(settings, vision) {
 
 async function withSlot(p, signal, fn) {
   let s = slots.get(p.id);
-  if (!s) slots.set(p.id, (s = { n: 0, q: [] }));
+  if (!s) slots.set(p.id, (s = { n: 0, q: [], last: 0 }));
   if (s.n >= p.concurrency) await new Promise((r) => s.q.push(r));
   s.n++;
   try {
+    // Some services allow only one request every few seconds: keep that distance.
+    const wait = (s.last || 0) + (p.minGapMs || 0) - Date.now();
+    if (wait > 0) await new Promise((r) => setTimeout(r, wait));
+    s.last = Date.now();
     if (signal?.aborted) throw new DOMException('aborted', 'AbortError');
     return await fn();
   } finally {
@@ -349,8 +353,9 @@ async function setMode(tabId, mode, on) {
     return { error: 'هالصفحة محمية من المتصفح وما تنترجم.' };
   }
   // The content scripts need the target language to know what to skip and which way text runs.
-  const lang = langInfo(await getSettings());
-  await chrome.tabs.sendMessage(tabId, { cmd: 'set', mode, on, lang }).catch(() => {});
+  const settings = await getSettings();
+  const lang = langInfo(settings);
+  await chrome.tabs.sendMessage(tabId, { cmd: 'set', mode, on, lang, hint: batchHint(settings) }).catch(() => {});
   return { ok: true };
 }
 

@@ -433,9 +433,9 @@
     ready.sort((x, y) => x[0] - y[0]);
 
     let i = 0;
-    while (i < ready.length && S.inflight < 3) {
+    while (i < ready.length && S.inflight < (M.hint.parallel || 3)) {
       // The very first request is small so the top of the page changes quickly.
-      const budget = S.sentAny ? 3600 : 1500;
+      const budget = S.sentAny ? M.hint.next || 3600 : M.hint.first || 1500;
       const batch = [];
       let size = 0;
       while (i < ready.length && batch.length < 50) {

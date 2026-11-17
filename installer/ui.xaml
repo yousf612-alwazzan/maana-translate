@@ -1,6 +1,6 @@
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="معنى — التثبيت" Width="840" Height="580"
+        Title="معنى — التثبيت" Width="840" Height="640"
         WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
         Background="#17161B" Foreground="#EFE9DC" FlowDirection="RightToLeft"
         FontFamily="Segoe UI" FontSize="15" UseLayoutRounding="True" SnapsToDevicePixels="True"
@@ -360,34 +360,43 @@
 
             <StackPanel x:Name="p4" Visibility="Collapsed">
               <TextBlock Style="{StaticResource H}" Text="حمّل الإضافة"/>
-              <TextBlock Style="{StaticResource P}" Text="١. اضغط زر Load unpacked."/>
+              <TextBlock Style="{StaticResource P}" Text="١. في صفحة الإضافات اضغط زر Load unpacked."/>
               <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                <TextBlock Text="٢. في نافذة اختيار المجلد اضغط" VerticalAlignment="Center"/>
+                <TextBlock Text="٢. تنفتح نافذة اختيار مجلد. اضغط" VerticalAlignment="Center"/>
                 <Border Style="{StaticResource Key}" FlowDirection="LeftToRight"><TextBlock Style="{StaticResource KeyText}" Text="Ctrl + V"/></Border>
-                <TextBlock Text="ثم اضغط Select Folder." VerticalAlignment="Center"/>
+                <TextBlock Text="في الخانة اللي تحت واسمها Folder." VerticalAlignment="Center"/>
               </StackPanel>
+              <TextBlock Style="{StaticResource P}" Text="٣. اضغط زر Select Folder على طول."/>
               <Border Style="{StaticResource Cap}">
-                <TextBlock Style="{StaticResource CapText}" Text="مسار المجلد انّسخ لك جاهز. بالعربي اسم الزر «تحميل إضافة تم فك حزمتها»."/>
+                <TextBlock Style="{StaticResource CapText}" Text="إذا انفتح المجلد وشفت داخله ثلاث مجلدات (‎_locales و icons و src) فإنت في المكان الصح. لا تفتح أي واحد منهم ولا تختاره، اضغط Select Folder بس."/>
               </Border>
-              <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+              <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
                 <Button x:Name="btnCopyPath" Style="{StaticResource Btn}" Content="انسخ المسار مرة ثانية"/>
                 <TextBlock x:Name="copied4" Text="انّسخ" Foreground="{StaticResource Note}" FontWeight="Bold" VerticalAlignment="Center" Margin="12,0,0,0" Visibility="Hidden"/>
               </StackPanel>
-              <Border Style="{StaticResource Mock}" Margin="0,16,0,0">
-                <Border Style="{StaticResource MockIn}">
+              <Border Style="{StaticResource Mock}" Margin="0,14,0,0">
+                <Border Style="{StaticResource MockIn}" Padding="14,10">
                   <StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                      <Border Background="{StaticResource Sheet}" BorderBrush="{StaticResource Red}" BorderThickness="4" Padding="12,5" Margin="0,0,8,0">
-                        <TextBlock Text="Load unpacked" FontSize="13.5" FontWeight="Bold"/>
+                    <DockPanel>
+                      <Border DockPanel.Dock="Right" Background="{StaticResource Note}" BorderBrush="{StaticResource Ink}" BorderThickness="2" Padding="8,2" VerticalAlignment="Center" FlowDirection="RightToLeft">
+                        <TextBlock Text="لا تفتح ولا واحد منهم" FontSize="12.5" FontWeight="Bold"/>
                       </Border>
-                      <Border Background="{StaticResource Sheet}" BorderBrush="{StaticResource Muted}" BorderThickness="2" Padding="12,7" Margin="0,0,8,0">
-                        <TextBlock Text="Pack extension" FontSize="13.5" Foreground="{StaticResource Muted}"/>
-                      </Border>
-                      <Border Background="{StaticResource Sheet}" BorderBrush="{StaticResource Muted}" BorderThickness="2" Padding="12,7">
-                        <TextBlock Text="Update" FontSize="13.5" Foreground="{StaticResource Muted}"/>
-                      </Border>
-                    </StackPanel>
-                    <DockPanel Margin="0,12,0,0">
+                      <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                          <Path Data="M0,2 L5,2 L7,4 L14,4 L14,12 L0,12 Z" Fill="#C9A227" Stroke="{StaticResource Ink}" StrokeThickness="1" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                          <TextBlock Text="_locales" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                          <Path Data="M0,2 L5,2 L7,4 L14,4 L14,12 L0,12 Z" Fill="#C9A227" Stroke="{StaticResource Ink}" StrokeThickness="1" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                          <TextBlock Text="icons" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                          <Path Data="M0,2 L5,2 L7,4 L14,4 L14,12 L0,12 Z" Fill="#C9A227" Stroke="{StaticResource Ink}" StrokeThickness="1" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                          <TextBlock Text="src" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                      </StackPanel>
+                    </DockPanel>
+                    <DockPanel Margin="0,8,0,0">
                       <Border DockPanel.Dock="Right" Background="{StaticResource Sheet}" BorderBrush="{StaticResource Red}" BorderThickness="4" Padding="12,4" Margin="8,0,0,0">
                         <TextBlock Text="Select Folder" FontSize="13.5" FontWeight="Bold"/>
                       </Border>

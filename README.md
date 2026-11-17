@@ -25,7 +25,8 @@
 
 1. حمّل [Maana-Setup.exe](https://github.com/yousf612-alwazzan/maana-translate/releases/latest/download/Maana-Setup.exe) وشغّله. إذا طلعت رسالة حماية من ويندوز اضغط **More info** ثم **Run anyway** (الملف غير موقّع).
 2. اختر متصفحك واضغط **ابدأ التثبيت**. البرنامج ينسخ الملفات لمكانها الدائم.
-3. اتبع الخطوات الثلاث التي يعرضها داخل المتصفح: الصق العنوان، شغّل وضع المطوّر، ثم Load unpacked والصق المسار.
+3. اتبع الخطوات الثلاث التي يعرضها داخل المتصفح: الصق العنوان، شغّل وضع المطوّر، ثم Load unpacked والصق المسار واضغط Select Folder.
+   إذا رأيت داخل المجلد ثلاثة مجلدات (`_locales` و `icons` و `src`) فأنت في المكان الصحيح: لا تفتح أياً منها، اضغط Select Folder فقط.
 4. البرنامج يجهّز لك العنوان والمسار للصق، فلا تكتب شيئاً بيدك.
 
 المتصفح لا يسمح لأي برنامج أن يضيف إضافة بنفسه، ولذلك هذه الخطوات الثلاث يدوية.
@@ -37,7 +38,7 @@
 1. حمّل [maana-translate.zip](https://github.com/yousf612-alwazzan/maana-translate/releases/latest/download/maana-translate.zip) وفك ضغطه إلى مجلد دائم.
 2. افتح الرابط `chrome://extensions` في المتصفح.
 3. فعّل خيار **وضع المطور** (Developer mode) من الزاوية العلوية.
-4. اضغط **تحميل غير المضغوطة** (Load unpacked) واختر المجلد الذي فككته (المجلد الذي بداخله `manifest.json`).
+4. اضغط **تحميل غير المضغوطة** (Load unpacked) واختر المجلد الذي فككته نفسه: المجلد الذي ترى بداخله `_locales` و `icons` و `src`. لا تدخل أياً من هذه الثلاثة، قف عند المجلد الذي يحتويها واضغط Select Folder.
 5. نفس الخطوات تنطبق على Edge و Brave.
 
 ---
@@ -93,7 +94,7 @@ Maana is a browser extension (Chrome, Edge, Brave and other Chromium browsers) t
 **Install**
 
 1. Download and run [Maana-Setup.exe](https://github.com/yousf612-alwazzan/maana-translate/releases/latest/download/Maana-Setup.exe). Windows shows a warning because the file is unsigned: choose More info, then Run anyway.
-2. Follow its three steps in the browser: paste the address it copied for you, switch on Developer mode, press Load unpacked and paste the folder path.
+2. Follow its three steps in the browser: paste the address it copied for you, switch on Developer mode, press Load unpacked, paste the folder path and press Select Folder. If you see the folders `_locales`, `icons` and `src`, you are in the right place: do not open any of them, just press Select Folder.
 3. In the settings page, agree to the notice, add your API key and press the test button.
 4. `Alt+T` translates the page, `Alt+M` translates comic images; the same shortcut restores the original.
 
